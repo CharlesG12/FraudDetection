@@ -22,7 +22,7 @@ public class FraudDetectionService {
     @Resource
     DecisionRule decisionRule;
 
-    public ResponsePOJO validateTransaction(RequestDto requestDto) {
+    public ResponseDTO validateTransaction(RequestDto requestDto) {
     //TODO: Add map struct
 
         // examples is a list, we take the first one
@@ -54,7 +54,7 @@ public class FraudDetectionService {
 
         Boolean isApproved = isTransactionApproved(transactionPO, decisionRule, cardUsage);
 
-        ResponsePOJO requestPOJOP = ResponsePOJO
+        ResponseDTO requestPOJOP = ResponseDTO
                 .builder()
                 .CardNumber(cardNumber)
                 .TransactionAmount(amount)

@@ -1,6 +1,6 @@
 package com.mastercard.fraud.controller;
 
-import com.mastercard.fraud.model.ResponsePOJO;
+import com.mastercard.fraud.model.ResponseDTO;
 import com.mastercard.fraud.model.request.RequestDto;
 import com.mastercard.fraud.service.FraudDetectionService;
 import com.mastercard.fraud.utils.AjaxResponse;
@@ -26,8 +26,8 @@ public class TransactionAnalyzeController {
     @CrossOrigin(origins = "http://localhost:8080")
     public AjaxResponse analyzeTransaction(@RequestBody RequestDto requestDto) {
         log.info("analyze transaction post request:" + requestDto);
-        ResponsePOJO responsePOJO = fraudDetectionService.validateTransaction(requestDto);
-        return AjaxResponse.success(responsePOJO);
+        ResponseDTO responseDto = fraudDetectionService.validateTransaction(requestDto);
+        return AjaxResponse.success(responseDto);
     }
 
 
