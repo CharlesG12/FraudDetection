@@ -1,6 +1,6 @@
 package com.mastercard.fraud.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mastercard.fraud.model.request.RequestPOJO;
+import com.mastercard.fraud.model.request.RequestDto;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -21,7 +21,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 @WebMvcTest(TransactionAnalyzeController.class)
 @AutoConfigureMockMvc
 @ExtendWith(SpringExtension.class)
-public class TransactionAnalyzeControllerTest {
+public class TransactionPOAnalyzeControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -33,7 +33,7 @@ public class TransactionAnalyzeControllerTest {
     public void analyzeTransaction_shouldReturnSuccess() throws Exception {
         // Arrange
         String sampleJsonRequest = new String(Files.readAllBytes(Paths.get("src/test/resources/sample.json")));
-        RequestPOJO actual = mapper.readValue(sampleJsonRequest, RequestPOJO.class);
+        RequestDto actual = mapper.readValue(sampleJsonRequest, RequestDto.class);
 
         // Act
         MvcResult mvcResult = mockMvc.perform(
