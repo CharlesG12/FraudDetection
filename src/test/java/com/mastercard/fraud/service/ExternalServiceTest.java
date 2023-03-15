@@ -17,6 +17,8 @@ import org.springframework.web.reactive.function.client.WebClient.ResponseSpec;
 
 import com.mastercard.fraud.model.externalApi.CardUsagePO;
 
+import java.math.BigInteger;
+
 
 @Slf4j
 @SpringBootTest
@@ -29,7 +31,7 @@ class ExternalServiceTest {
     @Test
     void testSearchCardUsage() {
         // arrange
-        String cardNum = "1234567890123456";
+        BigInteger cardNum = new BigInteger("1234567890123456");
         Integer totalUsage = 0;
         CardUsagePO[] cardUsageList = new CardUsagePO[7];
         for (int i = 0; i < cardUsageList.length; i++) {

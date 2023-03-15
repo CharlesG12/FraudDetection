@@ -3,12 +3,15 @@ package com.mastercard.fraud.service;
 import com.mastercard.fraud.config.DecisionRuleConfig;
 import com.mastercard.fraud.model.*;
 import com.mastercard.fraud.model.externalApi.CardUsageDto;
+import com.mastercard.fraud.model.transactionPost.Amount;
 import com.mastercard.fraud.model.transactionPost.AnalyzeRequest;
+import com.mastercard.fraud.model.transactionPost.CardNum;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,12 +30,12 @@ public class FraudDetectionService {
         List<Response> responseList = new ArrayList<>();
 
         for (TransactionPO transactionPO : transactionPOList) {
-            if (!isInputValid(transactionPO)) {
+            if (!isInputValid(transactionPO, analyzeRequest)) {
                 responseList.add(emptyResponse());
                 continue;
             }
 
-            String cardNumber = transactionPO.getCardNum();
+            BigInteger cardNumber = transactionPO.getCardNum();
             BigDecimal amount = transactionPO.getAmount();
 
             CardUsageDto cardUsage = externalService.searchCardUsage(cardNumber);
@@ -97,26 +100,32 @@ public class FraudDetectionService {
         return false;
     }
 
-    private boolean isInputValid(TransactionPO transactionPO){
-        String cardNumber = transactionPO.getCardNum();
+    private boolean isInputValid(TransactionPO transactionPO, AnalyzeRequest analyzeRequest){
+        BigInteger cardNumber = transactionPO.getCardNum();
         BigDecimal amount = transactionPO.getAmount();
 
-        if (cardNumber.length() != 16){
+        CardNum cardNumRequest = analyzeRequest.getPropertiesRoot().getTransaction().getPropertiesTransaction().getCardNum();
+        Amount amountRqequest = analyzeRequest.getPropertiesRoot().getTransaction().getPropertiesTransaction().getAmount();
+
+        if (cardNumber.toString().length() != 16){
             return false;
         }
 
-        String regex = "\\d+";
-        if(!cardNumber.matches(regex)) {
+        if( cardNumber.compareTo(cardNumRequest.getMaximum()) > 0) {
             return false;
         }
 
-//        Transaction might be negative, for example: refund
-//        if (amount.compareTo(BigDecimal.ZERO) < 0) {
-//            return false;
-//        }
+        if( cardNumber.compareTo(cardNumRequest.getMinimum()) < 0) {
+            return false;
+        }
+
+        if( amount.compareTo(amountRqequest.getMinimum()) < 0) {
+            return false;
+        }
 
         return true;
     }
+
 
     private Response emptyResponse() {
         Response response = Response
@@ -129,7 +138,7 @@ public class FraudDetectionService {
 
     private List<TransactionPO> extractTransactionData(AnalyzeRequest analyzeRequest){
         List<TransactionPO> transactionPOList = new ArrayList<>();
-        List<String> cardNumberList = analyzeRequest
+        List<BigInteger> cardNumberList = analyzeRequest
                 .getPropertiesRoot()
                 .getTransaction()
                 .getPropertiesTransaction()
