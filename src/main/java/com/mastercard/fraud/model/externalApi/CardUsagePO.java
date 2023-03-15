@@ -1,4 +1,4 @@
-package com.mastercard.fraud.model;
+package com.mastercard.fraud.model.externalApi;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

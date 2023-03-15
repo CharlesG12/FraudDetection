@@ -1,7 +1,7 @@
 package com.mastercard.fraud.controller;
 
 import com.mastercard.fraud.model.ResponseDTO;
-import com.mastercard.fraud.model.request.RequestDto;
+import com.mastercard.fraud.model.transactionPost.RequestDto;
 import com.mastercard.fraud.service.FraudDetectionService;
 import com.mastercard.fraud.utils.AjaxResponse;
 import jakarta.annotation.Resource;

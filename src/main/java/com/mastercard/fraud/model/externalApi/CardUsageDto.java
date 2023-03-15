@@ -1,11 +1,9 @@
-package com.mastercard.fraud.model;
+package com.mastercard.fraud.model.externalApi;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.List;
 
 @Data
 @AllArgsConstructor

@@ -1,7 +1,7 @@
 package com.mastercard.fraud.utils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mastercard.fraud.model.request.*;
+import com.mastercard.fraud.model.transactionPost.*;
 import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.nio.file.Files;

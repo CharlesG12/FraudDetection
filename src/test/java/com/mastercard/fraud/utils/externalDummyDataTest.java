@@ -1,6 +1,6 @@
 package com.mastercard.fraud.utils;
 
-import com.mastercard.fraud.model.CardUsageDto;
+import com.mastercard.fraud.model.externalApi.CardUsageDto;
 import com.mastercard.fraud.service.ExternalService;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;

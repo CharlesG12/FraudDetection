@@ -1,7 +1,8 @@
 package com.mastercard.fraud.service;
 
 import com.mastercard.fraud.model.*;
-import com.mastercard.fraud.model.request.RequestDto;
+import com.mastercard.fraud.model.externalApi.CardUsageDto;
+import com.mastercard.fraud.model.transactionPost.RequestDto;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
