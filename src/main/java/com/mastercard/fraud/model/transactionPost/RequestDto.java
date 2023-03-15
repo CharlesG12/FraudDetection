@@ -1,4 +1,4 @@
-package com.mastercard.fraud.model.request;
+package com.mastercard.fraud.model.transactionPost;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
@@ -12,10 +12,13 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class TransactionPOJO {
+public class RequestDto {
     private String title;
+
     private String type;
+
     private List<String> required;
+
     @JsonProperty("properties")
-    private PropertiesTransactionPOJO propertiesTransactionPOJO;
+    private PropertiesRootPOJO propertiesRootPOJO;
 }

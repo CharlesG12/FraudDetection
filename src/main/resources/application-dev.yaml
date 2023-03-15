@@ -1,0 +1,15 @@
+server:
+  port: 8080
+
+spring:
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+
+
+
+decision-rule:
+  transaction-hard-limit: 50000
+  transaction-avg-limit: 500
+  usage-hard-limit: 60
+  usage-soft-limit: 35

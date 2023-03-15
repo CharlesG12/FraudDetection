@@ -1,14 +1,21 @@
 package com.mastercard.fraud.controller;
 
-import com.mastercard.fraud.model.request.RequestPOJO;
+import com.mastercard.fraud.model.ResponseDTO;
+import com.mastercard.fraud.model.transactionPost.RequestDto;
+import com.mastercard.fraud.service.FraudDetectionService;
 import com.mastercard.fraud.utils.AjaxResponse;
+import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/analyzeTransaction")
 @Slf4j
+
 public class TransactionAnalyzeController {
+
+    @Resource(name = "FraudDetectService")
+    FraudDetectionService fraudDetectionService;
 
     @GetMapping("/test")
     public AjaxResponse hello() {
@@ -16,9 +23,12 @@ public class TransactionAnalyzeController {
     }
 
     @PostMapping
-    public AjaxResponse analyzeTransaction(@RequestBody RequestPOJO requestPOJO) {
-        log.info("analyze transaction post request:" + requestPOJO);
-        return AjaxResponse.success();
+    @CrossOrigin(origins = "http://localhost:8080")
+    public AjaxResponse analyzeTransaction(@RequestBody RequestDto requestDto) {
+        log.info("analyze transaction post request:" + requestDto);
+        ResponseDTO responseDto = fraudDetectionService.validateTransaction(requestDto);
+        return AjaxResponse.success(responseDto);
     }
+
 
 }

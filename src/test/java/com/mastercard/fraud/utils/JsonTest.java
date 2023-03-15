@@ -1,7 +1,7 @@
 package com.mastercard.fraud.utils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mastercard.fraud.model.request.*;
+import com.mastercard.fraud.model.transactionPost.*;
 import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -12,7 +12,7 @@ public class JsonTest {
     void testJsonRequestPOJOConversion() throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         String sampleJsonRequest = new String(Files.readAllBytes(Paths.get("src/test/resources/sample.json")));
-        RequestPOJO actual = mapper.readValue(sampleJsonRequest, RequestPOJO.class);
+        RequestDto actual = mapper.readValue(sampleJsonRequest, RequestDto.class);
 
         System.out.println(actual);
     }

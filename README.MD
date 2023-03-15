@@ -12,6 +12,6 @@ This is a simple credit card fraud detection service, provide a REST API.
     Monitoring -endpoint to show basic stats
     Packaging- build a docker image
     Test - unit test(integration test), coverage report, load-test.
-
-
+    service should be able to handle and respond to input errors.
+    service should log the following underlined transaction information for debugging
 
