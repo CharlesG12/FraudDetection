@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.List;
 
 @Data
@@ -16,9 +17,10 @@ import java.util.List;
 public class CardNum {
     private String title;
     private String type;
-    private BigDecimal minimum;
-    private BigDecimal maximum;
-    private List<String> examples;
+    private BigInteger minimum;
+    private BigInteger maximum;
+    private List<BigInteger> examples;
     @JsonProperty("default")
-    private BigDecimal defaultAmount;
+    private BigInteger defaultAmount;
+
 }

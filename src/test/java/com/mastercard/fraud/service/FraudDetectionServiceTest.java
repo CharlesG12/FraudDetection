@@ -1,6 +1,7 @@
 package com.mastercard.fraud.service;
 
 import com.mastercard.fraud.config.DecisionRuleConfig;
+import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,7 +14,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 @AutoConfigureMockMvc
 @ExtendWith(MockitoExtension.class)
 public class FraudDetectionServiceTest {
+
+
     private ExternalService externalService;
+
+    @Resource
     private DecisionRuleConfig decisionRuleConfig;
 
     @BeforeAll

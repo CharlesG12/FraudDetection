@@ -6,12 +6,13 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class TransactionPO {
-    String cardNum;
+    BigInteger cardNum;
     BigDecimal amount;
 }

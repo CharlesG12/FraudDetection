@@ -8,6 +8,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.reactive.function.client.WebClient;
+
+import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Random;
 
@@ -21,7 +23,7 @@ public class ExternalService {
     public WebClient webClient;
 
     @CrossOrigin(origins = "http://www.randomnumberapi.com")
-    public CardUsageDto searchCardUsage(String cardNum) {
+    public CardUsageDto searchCardUsage(BigInteger cardNum) {
         CardUsagePO[] cardUsage_list = new CardUsagePO[7];
         try {
             cardUsage_list = webClient
@@ -45,7 +47,7 @@ public class ExternalService {
                 .message("ok")
                 .build();
 
-        log.info("external api request:" + cardNum + " " + cardUsageDto);
+        log.info("external api request:" + cardNum.toString() + " " + cardUsageDto);
 
         return cardUsageDto;
     }
