@@ -1,111 +1,157 @@
 package com.mastercard.fraud.service;
 
+import com.mastercard.fraud.config.DecisionRuleConfig;
 import com.mastercard.fraud.model.*;
 import com.mastercard.fraud.model.externalApi.CardUsageDto;
-import com.mastercard.fraud.model.transactionPost.RequestDto;
+import com.mastercard.fraud.model.transactionPost.AnalyzeRequest;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 @Slf4j
 @Service( "FraudDetectService")
 public class FraudDetectionService {
-    private static final int global_usageLimit = 60;
-    private static final int global_usageCheckpoint = 35;
-    private static final BigDecimal global_avgSpendLimit = new BigDecimal(500);
-    private static final BigDecimal global_spendLimit = new BigDecimal(50000);
-
     @Resource
     ExternalService externalService;
 
     @Resource
-    DecisionRule decisionRule;
+    DecisionRuleConfig decisionRuleConfig;
 
-    public ResponseDTO validateTransaction(RequestDto requestDto) {
-    //TODO: Add map struct
+    public ResponseDTO validateTransaction(AnalyzeRequest analyzeRequest) {
 
-        // examples is a list, we take the first one
-        String cardNumber = requestDto
-                .getPropertiesRootPOJO()
-                .getTransactionPOJO()
-                .getPropertiesTransactionPOJO()
-                .getCardNumPOJO()
-                .getExamples()
-                .get(0).toString();
+        List<TransactionPO> transactionPOList = extractTransactionData(analyzeRequest);
+        List<Response> responseList = new ArrayList<>();
 
-        // examples is a list, we take the first one
-        BigDecimal amount = requestDto
-                .getPropertiesRootPOJO()
-                .getTransactionPOJO()
-                .getPropertiesTransactionPOJO()
-                .getAmountPOJO()
-                .getExamples()
-                .get(0);
+        for (TransactionPO transactionPO : transactionPOList) {
+            if (!isInputValid(transactionPO)) {
+                responseList.add(emptyResponse());
+                continue;
+            }
 
-        TransactionPO transactionPO = TransactionPO
-                .builder()
-                .cardNum(cardNumber)
-                .amount(amount)
-                .build();
+            String cardNumber = transactionPO.getCardNum();
+            BigDecimal amount = transactionPO.getAmount();
 
-        CardUsageDto cardUsage = externalService.searchCardUsage(cardNumber);
-        log.info("cardUsage" + cardUsage.toString());
+            CardUsageDto cardUsage = externalService.searchCardUsage(cardNumber);
+            log.info("cardUsage " + cardUsage.toString());
 
-        Boolean isApproved = isTransactionApproved(transactionPO, decisionRule, cardUsage);
+            Boolean isApproved = isTransactionApproved(transactionPO, decisionRuleConfig, cardUsage);
 
-        ResponseDTO requestPOJOP = ResponseDTO
-                .builder()
-                .CardNumber(cardNumber)
-                .TransactionAmount(amount)
-                .isApproved(isApproved)
-                .weeklyUseFrequency(cardUsage.getTotalUsage())
-                .build();
+            Response response = Response
+                    .builder()
+                    .CardNumber(cardNumber)
+                    .TransactionAmount(amount)
+                    .isApproved(isApproved)
+                    .weeklyUseFrequency(cardUsage.getTotalUsage())
+                    .message("ok")
+                    .build();
+            responseList.add(response);
+        }
 
-        return requestPOJOP;
+        ResponseDTO responseDTO = ResponseDTO.builder().responses(responseList).build();
+        return responseDTO;
     }
 
-    private boolean isTransactionApproved(TransactionPO transactionPO, DecisionRule decisionRule, CardUsageDto cardUsageDto) {
+    private boolean isTransactionApproved(TransactionPO transactionPO, DecisionRuleConfig decisionRuleConfig, CardUsageDto cardUsageDto) {
         // TODO: input error handling
         // TODO: Validate input values
 
-        if( isTransOverLimit(transactionPO, decisionRule)) {
+        if( isTransOverLimit(transactionPO, decisionRuleConfig)) {
             return true;
         }
 
-        if( isCardOverused(cardUsageDto, decisionRule)) {
+        if( isCardOverused(cardUsageDto, decisionRuleConfig)) {
             return true;
         }
 
-        if( isOverAvgLimit(transactionPO, cardUsageDto, decisionRule)) {
-            return true;
-        }
-        return false;
-    }
-
-    private boolean isTransOverLimit(TransactionPO transactionPO, DecisionRule decisionRule){
-        if(transactionPO.getAmount().compareTo(decisionRule.getTransactionHardLimit()) > 0) {
+        if( isOverAvgLimit(transactionPO, cardUsageDto, decisionRuleConfig)) {
             return true;
         }
         return false;
     }
 
-    private boolean isCardOverused(CardUsageDto cardUsageDto, DecisionRule decisionRule){
-        if(cardUsageDto.getTotalUsage() > decisionRule.getUsageHardLimit()) {
+    private boolean isTransOverLimit(TransactionPO transactionPO, DecisionRuleConfig decisionRuleConfig){
+        if(transactionPO.getAmount().compareTo(decisionRuleConfig.getTransactionHardLimit()) > 0) {
             return true;
         }
         return false;
     }
 
-    private boolean isOverAvgLimit(TransactionPO transactionPO, CardUsageDto cardUsageDto, DecisionRule decisionRule){
-        if(cardUsageDto.getTotalUsage() < decisionRule.getUsageSoftLimit()) {
+    private boolean isCardOverused(CardUsageDto cardUsageDto, DecisionRuleConfig decisionRuleConfig){
+        if(cardUsageDto.getTotalUsage() > decisionRuleConfig.getUsageHardLimit()) {
+            return true;
+        }
+        return false;
+    }
+
+    private boolean isOverAvgLimit(TransactionPO transactionPO, CardUsageDto cardUsageDto, DecisionRuleConfig decisionRuleConfig){
+        if(cardUsageDto.getTotalUsage() < decisionRuleConfig.getUsageSoftLimit()) {
             BigDecimal avgSpend = transactionPO.getAmount().divide(BigDecimal.valueOf(cardUsageDto.getTotalUsage()));
-            if( avgSpend.compareTo(decisionRule.getTransactionAvgLimit()) > 0 ) {
+            if( avgSpend.compareTo(decisionRuleConfig.getTransactionAvgLimit()) > 0 ) {
                 return true;
             }
         }
         return false;
     }
 
+    private boolean isInputValid(TransactionPO transactionPO){
+        String cardNumber = transactionPO.getCardNum();
+        BigDecimal amount = transactionPO.getAmount();
+
+        if (cardNumber.length() != 16){
+            return false;
+        }
+
+        String regex = "\\d+";
+        if(!cardNumber.matches(regex)) {
+            return false;
+        }
+
+//        Transaction might be negative, for example: refund
+//        if (amount.compareTo(BigDecimal.ZERO) < 0) {
+//            return false;
+//        }
+
+        return true;
+    }
+
+    private Response emptyResponse() {
+        Response response = Response
+                .builder()
+                .isApproved(false)
+                .message("Invalid input")
+                .build();
+        return response;
+    };
+
+    private List<TransactionPO> extractTransactionData(AnalyzeRequest analyzeRequest){
+        List<TransactionPO> transactionPOList = new ArrayList<>();
+        List<String> cardNumberList = analyzeRequest
+                .getPropertiesRoot()
+                .getTransaction()
+                .getPropertiesTransaction()
+                .getCardNum()
+                .getExamples();
+
+        List<BigDecimal> amountList = analyzeRequest
+                .getPropertiesRoot()
+                .getTransaction()
+                .getPropertiesTransaction()
+                .getAmount()
+                .getExamples();
+
+        for(int i = 0; i < cardNumberList.size(); i++) {
+            TransactionPO transactionPO = TransactionPO
+                    .builder()
+                    .cardNum(cardNumberList.get(i))
+                    .amount(amountList.get(i))
+                    .build();
+            transactionPOList.add(transactionPO);
+        }
+
+        return transactionPOList;
+    }
 }

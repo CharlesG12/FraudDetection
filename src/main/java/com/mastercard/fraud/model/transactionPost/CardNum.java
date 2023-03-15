@@ -13,12 +13,12 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class CardNumPOJO {
+public class CardNum {
     private String title;
     private String type;
     private BigDecimal minimum;
     private BigDecimal maximum;
-    private List<BigDecimal> examples;
+    private List<String> examples;
     @JsonProperty("default")
     private BigDecimal defaultAmount;
 }

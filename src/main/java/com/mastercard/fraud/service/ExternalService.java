@@ -1,5 +1,6 @@
 package com.mastercard.fraud.service;
 
+import com.mastercard.fraud.config.ExternalApiConfig;
 import com.mastercard.fraud.model.externalApi.CardUsageDto;
 import com.mastercard.fraud.model.externalApi.CardUsagePO;
 import jakarta.annotation.Resource;
@@ -7,14 +8,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.reactive.function.client.WebClient;
-
 import java.util.Arrays;
 import java.util.Random;
 
 @Slf4j
 @Service("ExternalService")
 public class ExternalService {
-    private final String url = "http://www.randomnumberapi.com/api/v1.0/random?min=0&max=12&count=7";
+    @Resource
+    ExternalApiConfig externalApiConfig;
 
     @Resource
     public WebClient webClient;
@@ -25,14 +26,14 @@ public class ExternalService {
         try {
             cardUsage_list = webClient
                     .get()
-                    .uri(url)
+                    .uri(externalApiConfig.getUrl())
                     .retrieve()
                     .bodyToMono(CardUsagePO[].class)
                     .block();
         } catch (Exception  ex){
-            log.error(ex.getMessage());
+            log.error("external api no response" + ex.getMessage());
 
-            return dummyData(ex.getMessage());
+            return dummyData("this is a random generated data");
         }
 
         Integer totalUsage = Arrays.stream(cardUsage_list).map(CardUsagePO::getUsage).reduce(0, Integer::sum);
@@ -49,6 +50,7 @@ public class ExternalService {
         return cardUsageDto;
     }
 
+    // populate dummy data when external service is down
     public CardUsageDto dummyData(String message) {
         String cardNum = "1234567890123456";
         Integer totalUsage = 0;

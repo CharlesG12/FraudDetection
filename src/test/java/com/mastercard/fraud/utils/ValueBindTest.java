@@ -1,6 +1,7 @@
 package com.mastercard.fraud.utils;
 
-import com.mastercard.fraud.model.DecisionRule;
+import com.mastercard.fraud.config.DecisionRuleConfig;
+import com.mastercard.fraud.config.ExternalApiConfig;
 import jakarta.annotation.Resource;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -11,11 +12,19 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 public class ValueBindTest {
     @Resource
-    DecisionRule decisionRule;
+    DecisionRuleConfig decisionRuleConfig;
+
+    @Resource
+    ExternalApiConfig externalApiConfig;
 
     @Test
-    public void valueBindTests() throws Exception {
-        System.out.println(decisionRule.toString());
+    public void decisionRuleValueBindTests() throws Exception {
+        System.out.println(decisionRuleConfig.toString());
+    }
+
+    @Test
+    public void externalApiValueBindTests() throws Exception {
+        System.out.println(externalApiConfig.toString());
     }
 
 }

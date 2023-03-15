@@ -6,10 +6,11 @@ spring:
     pathmatch:
       matching-strategy: ant_path_matcher
 
-
-
 decision-rule:
   transaction-hard-limit: 50000
   transaction-avg-limit: 500
   usage-hard-limit: 60
   usage-soft-limit: 35
+
+external-api:
+  url: "http://www.randomnumberapi.com/api/v1.0/random?min=0&max=12&count=7"
