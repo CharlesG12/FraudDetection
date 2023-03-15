@@ -12,7 +12,7 @@ public class JsonTest {
     void testJsonRequestPOJOConversion() throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         String sampleJsonRequest = new String(Files.readAllBytes(Paths.get("src/test/resources/sample.json")));
-        RequestPOJO actual = mapper.readValue(sampleJsonRequest, RequestPOJO.class);
+        RequestDto actual = mapper.readValue(sampleJsonRequest, RequestDto.class);
 
         System.out.println(actual);
     }
