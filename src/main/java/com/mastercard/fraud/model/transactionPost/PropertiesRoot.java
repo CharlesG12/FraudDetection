@@ -10,10 +10,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class PropertiesTransactionPOJO {
-    @JsonProperty("cardNum")
-    private CardNumPOJO cardNumPOJO;
-
-    @JsonProperty("amount")
-    private AmountPOJO amountPOJO;
+public class PropertiesRoot {
+    @JsonProperty("transaction")
+    private Transaction transaction;
 }

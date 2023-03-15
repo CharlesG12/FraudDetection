@@ -6,16 +6,14 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class TransactionPOJO {
-    private String title;
-    private String type;
-    private List<String> required;
-    @JsonProperty("properties")
-    private PropertiesTransactionPOJO propertiesTransactionPOJO;
+public class PropertiesTransaction {
+    @JsonProperty("cardNum")
+    private CardNum cardNum;
+
+    @JsonProperty("amount")
+    private Amount amount;
 }

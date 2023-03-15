@@ -13,7 +13,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AmountPOJO {
+public class Amount {
     private String title;
     private String type;
     private BigDecimal minimum;

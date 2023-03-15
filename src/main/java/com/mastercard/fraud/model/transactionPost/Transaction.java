@@ -12,13 +12,10 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class RequestDto {
+public class Transaction {
     private String title;
-
     private String type;
-
     private List<String> required;
-
     @JsonProperty("properties")
-    private PropertiesRootPOJO propertiesRootPOJO;
+    private PropertiesTransaction propertiesTransaction;
 }

@@ -12,6 +12,5 @@ import lombok.NoArgsConstructor;
 public class CardUsageDto {
     private CardUsagePO[] weeklyUsage;
     private Integer totalUsage;
-
     private String message;
 }
