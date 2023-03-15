@@ -5,13 +5,12 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.math.BigDecimal;
+import java.util.ArrayList;
 
 @Data
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
-public class TransactionPO {
-    String cardNum;
-    BigDecimal amount;
+@NoArgsConstructor
+public class CardUsagePO {
+    private Integer Usage;
 }

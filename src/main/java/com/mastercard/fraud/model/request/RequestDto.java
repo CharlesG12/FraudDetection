@@ -12,7 +12,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class RequestPOJO {
+public class RequestDto {
     private String title;
 
     private String type;

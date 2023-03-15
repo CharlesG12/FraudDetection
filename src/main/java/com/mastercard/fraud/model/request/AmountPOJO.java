@@ -20,16 +20,5 @@ public class AmountPOJO {
     private List<BigDecimal> examples;
     @JsonProperty("default")
     private BigDecimal defaultAmount;
-//
-//    @Override
-//    public boolean equals(Object o) {
-//        if (this == o) return true;
-//        if (o == null || getClass() != o.getClass()) return false;
-//        AmountPOJO that = AmountPOJO o;
-//        return title.equals(that.title) &&
-//                type.equals(that.type) &&
-//                minimum.equals(that.minimum) &&
-////                examples.equals(that.examples) &&
-//                defaultAmount.equals(that.defaultAmount);
-//    }
+
 }
