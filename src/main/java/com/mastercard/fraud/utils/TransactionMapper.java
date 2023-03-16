@@ -1,7 +1,6 @@
 package com.mastercard.fraud.utils;
 
 import com.mastercard.fraud.model.TransactionList;
-import com.mastercard.fraud.model.TransactionPO;
 import com.mastercard.fraud.model.transactionPost.AnalyzeRequest;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;

@@ -1,5 +1,4 @@
 package com.mastercard.fraud.service;
-
 import com.mastercard.fraud.config.ExternalApiConfig;
 import com.mastercard.fraud.model.externalApi.CardUsageWeekly;
 import com.mastercard.fraud.model.externalApi.CardUsage;
@@ -9,8 +8,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
-
 import java.math.BigInteger;
+import java.time.Duration;
 import java.util.Arrays;
 import java.util.Random;
 
@@ -32,13 +31,13 @@ public class ExternalService {
                     .get()
                     .uri(url)
                     .retrieve()
-                    .bodyToMono(CardUsage[].class);
+                    .bodyToMono(CardUsage[].class)
+                    .timeout(Duration.ofMillis(10000));
 //                    .block();
             cardUsage_list = webGetResponse.block();
         } catch (Exception  ex){
             log.error("external api no response" + ex.getMessage());
-
-            return dummyData("this is a random generated data");
+            return dummyData("external api failed, random generate weekly usage data");
         }
 
         Integer totalUsage = Arrays.stream(cardUsage_list).map(CardUsage::getUsage).reduce(0, Integer::sum);

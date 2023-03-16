@@ -32,7 +32,14 @@ public class FraudDetectionIntegrationTest {
         InputValidationResponse inputValidationResponse = fraudDetectionService.validateInput(analyzeRequest);
 
         log.info(inputValidationResponse.toString());
+    }
 
+    @Test
+    void negativeAmount_expectFail() throws IOException {
+        AnalyzeRequest analyzeRequest = getJsonRequestTestData("src/test/resources/requestTestData/negativeTransaction.json");
+        InputValidationResponse inputValidationResponse = fraudDetectionService.validateInput(analyzeRequest);
+
+        log.info(inputValidationResponse.toString());
     }
 
     public AnalyzeRequest getJsonRequestTestData(String path) throws IOException {
