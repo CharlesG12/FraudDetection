@@ -11,8 +11,5 @@ public class BankFraudDectionApplication {
         SpringApplication.run(BankFraudDectionApplication.class, args);
     }
 
-    @Bean
-    public WebClient webClient() {
-        return WebClient.builder().build();
-    }
+
 }
