@@ -31,3 +31,4 @@ This is a simple credit card fraud detection service, provide a REST API.
 
 ### Observability
     http://localhost:8081/actuator
+

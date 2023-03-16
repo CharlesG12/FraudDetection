@@ -7,8 +7,6 @@ import com.mastercard.fraud.service.FraudDetectionService;
 import com.mastercard.fraud.utils.AjaxResponse;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

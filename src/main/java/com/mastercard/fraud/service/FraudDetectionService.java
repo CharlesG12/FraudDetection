@@ -123,16 +123,16 @@ public class FraudDetectionService {
             if(cardUsageWeekly.getTotalUsage() == 0 ) {
                 return false;
             }
-        try{
-            BigDecimal avgSpend = amount.divide(BigDecimal.valueOf(cardUsageWeekly.getTotalUsage()), 3, RoundingMode.CEILING);
-            if( avgSpend.compareTo(decisionRuleConfig.getTransactionAvgLimit()) > 0 ) {
-                return true;
+            try{
+                BigDecimal avgSpend = amount.divide(BigDecimal.valueOf(cardUsageWeekly.getTotalUsage()), 3, RoundingMode.CEILING);
+                if( avgSpend.compareTo(decisionRuleConfig.getTransactionAvgLimit()) > 0 ) {
+                    return true;
                 }
             }
-        catch (ArithmeticException e) {
-            log.info(e.getMessage());
-            log.info(String.format("Error : amount: %s , totalUsage: %s", amount, cardUsageWeekly.getTotalUsage().toString()));
-            throw new ArithmeticException();
+            catch (ArithmeticException e) {
+                log.info(e.getMessage());
+                log.info(String.format("Error : amount: %s , totalUsage: %s", amount, cardUsageWeekly.getTotalUsage().toString()));
+                throw new ArithmeticException();
             }
         }
         return false;
