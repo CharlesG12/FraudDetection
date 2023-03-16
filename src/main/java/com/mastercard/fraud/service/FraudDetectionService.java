@@ -38,6 +38,7 @@ public class FraudDetectionService {
 
         boolean isValid = true;
         StringBuilder messageBuilder = new StringBuilder();
+        messageBuilder.append("");
 
         for( BigInteger cardNum : transactionList.getCardNum()) {
             if( cardNum.compareTo(maxCardNum) > 0) {

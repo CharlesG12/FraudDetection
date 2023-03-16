@@ -84,8 +84,8 @@ public class controllerUnitTest {
 
         List<ResponseVO> expectResponseVOList = new ArrayList<>();
         ResponseVO responseVO = ResponseVO.builder()
-                .CardNumber(new BigInteger("80804883759845"))
-                .TransactionAmount(new BigDecimal("345.60"))
+                .cardNumber(new BigInteger("80804883759845"))
+                .transactionAmount(new BigDecimal("345.60"))
                 .weeklyUseFrequency(30)
                 .isApproved(true)
                 .build();

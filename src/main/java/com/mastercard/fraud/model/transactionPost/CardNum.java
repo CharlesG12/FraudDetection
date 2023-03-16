@@ -33,7 +33,9 @@ public class CardNum {
 
         for(BigInteger value: valueList) {
             StringBuilder builder = new StringBuilder(value.toString());
-            builder.replace(4, 12, "********");
+            if(value.toString().length() > 13 ) {
+                builder.replace(4, 12, "********");
+            }
             result.append(builder);
         }
 

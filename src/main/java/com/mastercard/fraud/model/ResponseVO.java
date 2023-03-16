@@ -13,16 +13,17 @@ import java.math.BigInteger;
 @AllArgsConstructor
 @Builder
 public class ResponseVO {
-    private BigInteger CardNumber;
-    private BigDecimal TransactionAmount;
+    private BigInteger cardNumber;
+    private BigDecimal transactionAmount;
     private Boolean isApproved;
     private Integer weeklyUseFrequency;
     @Override
     public String toString() {
-//        BigInteger var10000 = this.getCardNumber();
         String cardNum = this.getCardNumber().toString();
         StringBuilder builder = new StringBuilder(cardNum);
-        builder.replace(4, 12, "********");
+        if ( cardNum.length() > 13 ) {
+            builder.replace(4, 12, "********");
+        }
 
         return "Response(CardNumber=" + builder.toString() + ", TransactionAmount=" + this.getTransactionAmount() + ", isApproved=" + this.getIsApproved() + ", weeklyUseFrequency=" + this.getWeeklyUseFrequency() + ")";
     }

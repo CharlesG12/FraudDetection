@@ -2,6 +2,7 @@ package com.mastercard.fraud.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mastercard.fraud.model.InputValidationResponse;
+import com.mastercard.fraud.model.Response;
 import com.mastercard.fraud.model.transactionPost.AnalyzeRequest;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +15,9 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @Slf4j
 @SpringBootTest
@@ -28,7 +32,16 @@ public class FraudDetectionJsonFileTest {
         AnalyzeRequest analyzeRequest = getJsonRequestTestData("src/test/resources/requestTestData/swaggerDefault.json");
         InputValidationResponse inputValidationResponse = fraudDetectionService.validateInput(analyzeRequest);
 
-        log.info(inputValidationResponse.toString());
+        assertEquals(true, inputValidationResponse.isValid());
+        assertEquals("", inputValidationResponse.getMessage());
+//        log.info(inputValidationResponse.toString());
+
+        List<Response> responseList = fraudDetectionService.validateTransaction(analyzeRequest);
+
+        assertEquals(1, responseList.size());
+        assertEquals("0", responseList.get(0).getCardNumber().toString());
+        assertEquals("0", responseList.get(0).getTransactionAmount().toString());
+        log.info(responseList.toString());
     }
 
     @Test
