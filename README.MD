@@ -19,12 +19,13 @@ This is a simple credit card fraud detection service, provide a REST API.
 ### Obfuscate Card Number
     Achieved by override toString function in model
     Drawback: can accidently call other function to print out the cardNum.
+    Only mask the carNumber when the length is over 13.
 
     Alternatives:  
         Custom log mask pattern,  drawback: might impact performance, rules can be hard to define.
 
 ### Load Test
-    could implement Gatling.
+    Jmeter or Gatling
 
 ### SwaggerUI
     http://localhost:8080/swagger-ui/index.html
@@ -32,3 +33,6 @@ This is a simple credit card fraud detection service, provide a REST API.
 ### Observability
     http://localhost:8081/actuator
 
+### Docker Image
+    docker build -t mastercard-fraud-server .
+    docker run -p 8080:8080 -p 8081:8081 mastercard-fraud-server
