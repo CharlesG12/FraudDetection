@@ -1,6 +1,8 @@
 package com.mastercard.fraud.utils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mastercard.fraud.model.Response;
+import com.mastercard.fraud.model.ResponseVO;
 import com.mastercard.fraud.model.TransactionList;
 import com.mastercard.fraud.model.transactionPost.AnalyzeRequest;
 import jakarta.annotation.Resource;
@@ -13,6 +15,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @Slf4j
 @SpringBootTest
@@ -29,7 +33,29 @@ public class MapStructtest {
         AnalyzeRequest request = mapper.readValue(sampleJsonRequest, AnalyzeRequest.class);
 
         TransactionList transactionList = transactionMapper.transactionPOList(request);
-        log.info(String.valueOf(transactionList));
+        assertEquals(transactionList.getCardNum().size(), 1);
+        assertEquals(transactionList.getCardNum().get(0).toString(), "5026840000000001");
+        assertEquals(transactionList.getAmount().get(0).toString(), "3.99");
+    }
+
+    @Test
+    public void nullRequestMappingTest_expectNull() throws IOException {
+        AnalyzeRequest request = AnalyzeRequest.builder().build();
+
+        TransactionList transactionList = transactionMapper.transactionPOList(request);
+        assertEquals(transactionList.getCardNum(), null);
+        assertEquals(transactionList.getAmount(), null);
+    }
+
+    @Test
+    public void nullResponseMappingTest_expectNull() throws IOException {
+        Response request = Response.builder().build();
+
+        ResponseVO responseVO = transactionMapper.responseVO(request);
+        assertEquals(responseVO.getCardNumber(), null);
+        assertEquals(responseVO.getIsApproved(), null);
+        assertEquals(responseVO.getTransactionAmount(), null);
+        assertEquals(responseVO.getWeeklyUseFrequency(), null);
     }
 
 }

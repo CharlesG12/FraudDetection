@@ -130,38 +130,46 @@ public class FraudDetectionServiceTest {
         assertEquals(false, responseList.get(0).getIsApproved());
         assertEquals(expectedMessage, responseList.get(0).getMessage());
     }
-//
-//    @Test
-//    public void transactionBelowLimit_expectInvalidResponse() throws IOException {
-//        BigDecimal transactionHardLimit = new BigDecimal("50000");
-//        // Create sample request data
-//        AnalyzeRequest analyzeRequest = getJsonRequestTestData("src/test/resources/requestTestData/overTransactionHardLimit.json");
-//        CardUsageWeekly cardUsageWeekly = getCardUsageWeeklTestData("src/test/resources/cardUsageWeeklyTestData/validUsage.json");
-//
-//
-//        // Create sample request data
-//        List<BigInteger> cardNumList = new ArrayList<>();
-//        cardNumList.add(new BigInteger("5026840000000001"));
-//        List<BigDecimal> amountList = new ArrayList<>();
-//        amountList.add(new BigDecimal("-1.00"));
-//
-//        TransactionList transactionList = TransactionList.builder().cardNum(cardNumList).amount(amountList).build();
-//
-//        when(decisionRuleConfigMock.getTransactionHardLimit()).thenReturn(transactionHardLimit);
-//        when(mapperMock.transactionPOList(any(AnalyzeRequest.class))).thenReturn(transactionList);
-//        when(externalServiceMock.searchCardUsage(any(BigInteger.class))).thenReturn(cardUsageWeekly);
-//
-//        List<Response> responseList = fraudDetectionService.validateTransaction(analyzeRequest);
-//
-//        BigDecimal expectedTransactionAmount = new BigDecimal("-1.00");
-//        String expectedMessage = "Transaction amount is over max limit";
-//
-//        log.info(responseList.get(0).toString());
-//        assertEquals(1, responseList.size());
-//        assertEquals(expectedTransactionAmount, responseList.get(0).getTransactionAmount());
-//        assertEquals(false, responseList.get(0).getIsApproved());
-//        assertEquals(expectedMessage, responseList.get(0).getMessage());
-//    }
+
+    @Test
+    public void zeroAmount_expectApproved() throws IOException {
+        // Create sample request data
+        AnalyzeRequest analyzeRequest = getJsonRequestTestData("src/test/resources/requestTestData/overTransactionHardLimit.json");
+
+        BigDecimal transactionHardLimit = new BigDecimal("50000");
+        Integer usageHardLimit = 65;
+
+        // Create sample request data
+        List<BigInteger> cardNumList = new ArrayList<>();
+        cardNumList.add(new BigInteger("5026840000000001"));
+        List<BigDecimal> amountList = new ArrayList<>();
+        amountList.add(new BigDecimal("0.00"));
+        TransactionList transactionList = TransactionList.builder().cardNum(cardNumList).amount(amountList).build();
+
+        // Create sample external api data
+        CardUsage[] cardUsageList = new CardUsage[7];
+        for(int i = 0; i < cardUsageList.length; i++){
+            cardUsageList[i] = new CardUsage(1);
+        }
+        CardUsageWeekly cardUsageWeekly = CardUsageWeekly.builder().weeklyUsage(cardUsageList).totalUsage(1).message("ok").build();
+
+        when(decisionRuleConfigMock.getTransactionHardLimit()).thenReturn(transactionHardLimit);
+        when(decisionRuleConfigMock.getUsageHardLimit()).thenReturn(usageHardLimit);
+
+        when(mapperMock.transactionPOList(any(AnalyzeRequest.class))).thenReturn(transactionList);
+        when(externalServiceMock.searchCardUsage(any(BigInteger.class))).thenReturn(cardUsageWeekly);
+
+        List<Response> responseList = fraudDetectionService.validateTransaction(analyzeRequest);
+
+        BigDecimal expectedTransactionAmount = new BigDecimal("0.00");
+        String expectedMessage = "transaction approved";
+
+        log.info(responseList.get(0).toString());
+        assertEquals(1, responseList.size());
+        assertEquals(expectedTransactionAmount, responseList.get(0).getTransactionAmount());
+        assertEquals(true, responseList.get(0).getIsApproved());
+        assertEquals(expectedMessage, responseList.get(0).getMessage());
+    }
 
     @Test
     public void usageOverLimit_expectInvalidResponse() throws IOException {
@@ -244,6 +252,55 @@ public class FraudDetectionServiceTest {
         assertEquals(1, responseList.size());
         assertEquals(expectedTransactionAmount, responseList.get(0).getTransactionAmount());
         assertEquals(false, responseList.get(0).getIsApproved());
+        assertEquals(expectedUsage, responseList.get(0).getWeeklyUseFrequency());
+        assertEquals(expectedMessage, responseList.get(0).getMessage());
+    }
+
+    @Test
+    public void zeroUsage_expect() throws IOException {
+        AnalyzeRequest analyzeRequest = getJsonRequestTestData("src/test/resources/sample.json");
+
+        BigDecimal transactionHardLimit = new BigDecimal("50000");
+        BigDecimal transactionAvgLimit = new BigDecimal("500");
+        Integer usageHardLimit = 65;
+        Integer usageSoftLimit = 35;
+
+        // Create sample request data
+        List<BigInteger> cardNumList = new ArrayList<>();
+        cardNumList.add(new BigInteger("5026840000000001"));
+        List<BigDecimal> amountList = new ArrayList<>();
+        amountList.add(new BigDecimal("10000.00"));
+
+        TransactionList transactionList = TransactionList.builder().cardNum(cardNumList).amount(amountList).build();
+
+        // Create sample external api data
+        CardUsage[] cardUsageList = new CardUsage[7];
+        for(int i = 0; i < cardUsageList.length; i++){
+            cardUsageList[i] = new CardUsage(1);
+        }
+        CardUsageWeekly cardUsageWeekly = CardUsageWeekly.builder().weeklyUsage(cardUsageList).totalUsage(0).message("ok").build();
+
+        // Set up mockito behavior
+        when(externalServiceMock.searchCardUsage(any(BigInteger.class))).thenReturn(cardUsageWeekly);
+
+        when(mapperMock.transactionPOList(any(AnalyzeRequest.class))).thenReturn(transactionList);
+
+        when(decisionRuleConfigMock.getTransactionHardLimit()).thenReturn(transactionHardLimit);
+//        when(decisionRuleConfigMock.getTransactionAvgLimit()).thenReturn(transactionAvgLimit);
+        when(decisionRuleConfigMock.getUsageHardLimit()).thenReturn(usageHardLimit);
+        when(decisionRuleConfigMock.getUsageSoftLimit()).thenReturn(usageSoftLimit);
+
+
+        List<Response> responseList = fraudDetectionService.validateTransaction(analyzeRequest);
+
+
+        BigDecimal expectedTransactionAmount = new BigDecimal("10000.00");
+        String expectedMessage = "transaction approved";
+        Integer expectedUsage = 0;
+
+        assertEquals(1, responseList.size());
+        assertEquals(expectedTransactionAmount, responseList.get(0).getTransactionAmount());
+        assertEquals(true, responseList.get(0).getIsApproved());
         assertEquals(expectedUsage, responseList.get(0).getWeeklyUseFrequency());
         assertEquals(expectedMessage, responseList.get(0).getMessage());
     }

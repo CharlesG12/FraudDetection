@@ -1,10 +1,8 @@
 package com.mastercard.fraud.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mastercard.fraud.config.DecisionRuleConfig;
 import com.mastercard.fraud.model.InputValidationResponse;
 import com.mastercard.fraud.model.transactionPost.AnalyzeRequest;
-import com.mastercard.fraud.utils.TransactionMapper;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
@@ -12,7 +10,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.xmlunit.builder.Input;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -22,7 +19,7 @@ import java.nio.file.Paths;
 @SpringBootTest
 @AutoConfigureMockMvc
 @ExtendWith(SpringExtension.class)
-public class FraudDetectionIntegrationTest {
+public class FraudDetectionJsonFileTest {
     @Resource
     FraudDetectionService fraudDetectionService;
 
