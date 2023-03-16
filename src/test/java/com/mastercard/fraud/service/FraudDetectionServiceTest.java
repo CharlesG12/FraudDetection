@@ -50,6 +50,7 @@ public class FraudDetectionServiceTest {
         // Create sample request data
 //        AnalyzeRequest analyzeRequest = getJsonRequestTestData("src/test/resources/requestTestData/cardNumberError.json");
         AnalyzeRequest analyzeRequest = getJsonRequestTestData("src/test/resources/sample.json");
+//        AnalyzeRequest analyzeRequest = getJsonRequestTestData("src/test/resources/requestTestData/swaggerDefault.json");
 
         // Create sample request data
         List<BigInteger> cardNumList = new ArrayList<>();
