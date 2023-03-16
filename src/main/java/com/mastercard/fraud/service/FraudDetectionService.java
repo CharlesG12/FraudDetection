@@ -31,6 +31,7 @@ public class FraudDetectionService {
 
         for (TransactionPO transactionPO : transactionPOList) {
             if (!isInputValid(transactionPO, analyzeRequest)) {
+                log.error("invalid input");
                 responseList.add(emptyResponse());
                 continue;
             }
@@ -51,6 +52,7 @@ public class FraudDetectionService {
                     .weeklyUseFrequency(cardUsage.getTotalUsage())
                     .message("ok")
                     .build();
+            log.info(response.toString());
             responseList.add(response);
         }
 
@@ -60,7 +62,6 @@ public class FraudDetectionService {
 
     private boolean isTransactionApproved(TransactionPO transactionPO, DecisionRuleConfig decisionRuleConfig, CardUsageDto cardUsageDto) {
         // TODO: input error handling
-        // TODO: Validate input values
 
         if( isTransOverLimit(transactionPO, decisionRuleConfig)) {
             return true;
