@@ -1,0 +1,5 @@
+{
+  "weeklyUsage": [10, 5, 5, 5, 5, 5, 5],
+  "totalUsage": 40,
+  "message": "usageOverSoftLimit"
+}

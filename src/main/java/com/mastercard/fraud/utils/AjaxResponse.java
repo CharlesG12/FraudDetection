@@ -20,11 +20,12 @@ public class AjaxResponse {
         return ajaxResponse;
     }
 
-    public static AjaxResponse success() {
+    public static AjaxResponse fail(Object obj) {
         AjaxResponse ajaxResponse = new AjaxResponse();
         ajaxResponse.setOk(true);
         ajaxResponse.setCode(200);
-        ajaxResponse.setMessage("test Successes");
+        ajaxResponse.setMessage("Invalid Input");
+        ajaxResponse.setData(obj);
         return ajaxResponse;
     }
 

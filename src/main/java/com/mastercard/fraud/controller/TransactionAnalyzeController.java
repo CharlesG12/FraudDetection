@@ -1,5 +1,5 @@
 package com.mastercard.fraud.controller;
-
+import com.mastercard.fraud.model.InputValidationResponse;
 import com.mastercard.fraud.model.Response;
 import com.mastercard.fraud.model.ResponseDTO;
 import com.mastercard.fraud.model.transactionPost.AnalyzeRequest;
@@ -16,20 +16,21 @@ import java.util.List;
 @Slf4j
 
 public class TransactionAnalyzeController {
-
     @Resource(name = "FraudDetectService")
     FraudDetectionService fraudDetectionService;
-
-    @GetMapping("/test")
-    public AjaxResponse hello() {
-        return AjaxResponse.success();
-    }
 
     @PostMapping
     @CrossOrigin(origins = "http://localhost:8080")
     public AjaxResponse analyzeTransaction(@RequestBody AnalyzeRequest analyzeRequest) {
         log.info("analyze transaction post request:" + analyzeRequest);
-        ResponseDTO responseDTO = fraudDetectionService.validateTransaction(analyzeRequest);
+
+        InputValidationResponse inputValidationResponse = fraudDetectionService.validateInput(analyzeRequest);
+        if(!inputValidationResponse.isValid()) {
+            return AjaxResponse.fail(inputValidationResponse);
+        }
+
+        List<Response> responseList = fraudDetectionService.validateTransaction(analyzeRequest);
+        ResponseDTO responseDTO = ResponseDTO.builder().responses(responseList).build();
         return AjaxResponse.success(responseDTO);
     }
 

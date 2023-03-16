@@ -1,0 +1,5 @@
+{
+  "weeklyUsage": [10, 10, 10, 10, 10, 10, 10],
+  "totalUsage": 70,
+  "message": "usageOverHardLimit"
+}

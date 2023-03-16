@@ -1,0 +1,40 @@
+{
+  "title":"root",
+  "type":"object",
+  "required": [
+    "transaction"
+  ],
+  "properties": {
+    "transaction": {
+      "title": "transaction",
+      "type": "object",
+      "required": [
+        "cardNum",
+        "amount"
+      ],
+      "properties": {
+        "cardNum": {
+          "title": "cardnum",
+          "type": "integer",
+          "minimum": 1000000000000000,
+          "maximum": 9999999999999999,
+          "examples": [
+            10000000000000001,
+            999999999999999
+          ],
+          "default": 9999999999999999
+        },
+        "amount": {
+          "title": "amount",
+          "type": "number",
+          "minimum": 0.00,
+          "examples": [
+            3.99,
+            3.99
+          ],
+          "default": 0.00
+        }
+      }
+    }
+  }
+}

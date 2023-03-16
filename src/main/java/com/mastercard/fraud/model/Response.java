@@ -21,7 +21,7 @@ public class Response {
 
     @Override
     public String toString() {
-        BigInteger var10000 = this.getCardNumber();
+//        BigInteger var10000 = this.getCardNumber();
         String cardNum = this.getCardNumber().toString();
         StringBuilder builder = new StringBuilder(cardNum);
         builder.replace(4, 12, "********");
