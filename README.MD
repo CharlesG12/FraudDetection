@@ -14,12 +14,24 @@ This is a simple credit card fraud detection service, provide a REST API.
     Test - unit test(integration test), coverage report, load-test.
     Service should be able to handle and respond to input errors.
     Service should log the following underlined transaction information for debugging
-    There should have a time limit for connect to external api.
+    
+    Add a time limit for connect to external api.
+
+## Input Error Handling
+    The request body would be checked: 
+        1. Card number and amount count does not match:   Response with isValid : False,  Message: Input amount count does not match card number count
+        2. Card number is over maximum: Message:          Response with isValid : False,  Message: Card number is over Max limit, Error Input
+        3. Card number is under minimum:                  Response with isValid : False,  Message: Card number is under Min limit, Error Input
+        4. Transaction Amount is under minimum:           Response with isValid : False,  Message with: Transaction amount is under min limit, Error Input
+
 
 ### Obfuscate Card Number
     Achieved by override toString function in model
     Drawback: can accidently call other function to print out the cardNum.
     Only mask the carNumber when the length is over 13.
+
+    affected class:
+        ResponseVO, Response, CardNum
 
     Alternatives:  
         Custom log mask pattern,  drawback: might impact performance, rules can be hard to define.
