@@ -12,5 +12,5 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class ResponseDTO {
-    List<Response> responses;
+    List<ResponseVO> responses;
 }

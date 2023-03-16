@@ -38,6 +38,7 @@ public class FraudDetectionService {
 
         boolean isValid = true;
         StringBuilder messageBuilder = new StringBuilder();
+        messageBuilder.append("");
 
         for( BigInteger cardNum : transactionList.getCardNum()) {
             if( cardNum.compareTo(maxCardNum) > 0) {
@@ -116,23 +117,16 @@ public class FraudDetectionService {
 
     private boolean isOverAvgLimit(BigDecimal amount, CardUsageWeekly cardUsageWeekly, DecisionRuleConfig decisionRuleConfig) throws ArithmeticException{
         if (amount.compareTo(new BigDecimal("0.00")) == 0) {
-            return true;
+            return false;
         }
 
         if(cardUsageWeekly.getTotalUsage() < decisionRuleConfig.getUsageSoftLimit()) {
             if(cardUsageWeekly.getTotalUsage() == 0 ) {
                 return false;
             }
-            try{
-                BigDecimal avgSpend = amount.divide(BigDecimal.valueOf(cardUsageWeekly.getTotalUsage()), 3, RoundingMode.CEILING);
-                if( avgSpend.compareTo(decisionRuleConfig.getTransactionAvgLimit()) > 0 ) {
-                    return true;
-                }
-            }
-            catch (ArithmeticException e) {
-                log.info(e.getMessage());
-                log.info(String.format("Error : amount: %s , totalUsage: %s", amount, cardUsageWeekly.getTotalUsage().toString()));
-                throw new ArithmeticException();
+            BigDecimal avgSpend = amount.divide(BigDecimal.valueOf(cardUsageWeekly.getTotalUsage()), 3, RoundingMode.CEILING);
+            if( avgSpend.compareTo(decisionRuleConfig.getTransactionAvgLimit()) > 0 ) {
+                return true;
             }
         }
         return false;
