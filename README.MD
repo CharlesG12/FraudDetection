@@ -40,7 +40,7 @@ This is a simple credit card fraud detection service, provide a REST API.
     coverage: 
         Class: 100%
         Method: 100%
-        Line: 93%
+        Line: 95%
 
     The 7% untested line is from mapstruct auto generated lines.
     Since it's a lot line about test if the input is null, so used null object to test against part of the mapstruct object.
