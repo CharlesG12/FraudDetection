@@ -46,7 +46,7 @@ This is a simple credit card fraud detection service, provide a REST API.
     Since it's a lot line about test if the input is null, so used null object to test against part of the mapstruct object.
 
 ### Load Test
-    Jmeter or Gatling
+    Used Jmeter for load test
 
 ### SwaggerUI
     http://localhost:8080/swagger-ui/index.html
