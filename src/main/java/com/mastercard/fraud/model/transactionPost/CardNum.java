@@ -23,4 +23,22 @@ public class CardNum {
     @JsonProperty("default")
     private BigInteger defaultAmount;
 
+
+    @Override
+    public String toString() {
+        String var10000 = this.getTitle();
+
+        List<BigInteger> valueList = this.getExamples();
+        StringBuilder result = new StringBuilder("");
+
+        for(BigInteger value: valueList) {
+            StringBuilder builder = new StringBuilder(value.toString());
+            builder.replace(4, 12, "********");
+            result.append(builder);
+        }
+
+
+        return "CardNum(title=" + var10000 + ", type=" + this.getType() + ", minimum=" + this.getMinimum() + ", maximum=" + this.getMaximum() + ", examples=" + result + ", defaultAmount=" + this.getDefaultAmount() + ")";
+    }
+
 }

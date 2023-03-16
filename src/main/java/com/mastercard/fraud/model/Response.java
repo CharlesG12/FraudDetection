@@ -18,4 +18,15 @@ public class Response {
     private Boolean isApproved;
     private Integer weeklyUseFrequency;
     private String message;
+
+    @Override
+    public String toString() {
+        BigInteger var10000 = this.getCardNumber();
+        String cardNum = this.getCardNumber().toString();
+        StringBuilder builder = new StringBuilder(cardNum);
+        builder.replace(4, 12, "********");
+
+        return "Response(CardNumber=" + builder.toString() + ", TransactionAmount=" + this.getTransactionAmount() + ", isApproved=" + this.getIsApproved() + ", weeklyUseFrequency=" + this.getWeeklyUseFrequency() + ", message=" + this.getMessage() + ")";
+    }
+
 }
