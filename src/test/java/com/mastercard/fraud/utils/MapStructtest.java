@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -45,6 +46,10 @@ public class MapStructtest {
         TransactionList transactionList = transactionMapper.transactionPOList(request);
         assertEquals(transactionList.getCardNum(), null);
         assertEquals(transactionList.getAmount(), null);
+
+        TransactionList transactionList_null = transactionMapper.transactionPOList(null);
+        assertEquals(transactionList_null, null);
+
     }
 
     @Test
@@ -56,6 +61,13 @@ public class MapStructtest {
         assertEquals(responseVO.getIsApproved(), null);
         assertEquals(responseVO.getTransactionAmount(), null);
         assertEquals(responseVO.getWeeklyUseFrequency(), null);
+
+        ResponseVO responseVO1_null = transactionMapper.responseVO((Response) null);
+        assertEquals(responseVO1_null, null);
+
+        List<ResponseVO> responseVOList_null = transactionMapper.responseVO((List<Response>) null);
+        assertEquals(responseVOList_null, null);
+
     }
 
 }
