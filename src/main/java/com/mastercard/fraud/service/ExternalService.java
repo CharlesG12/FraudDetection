@@ -33,6 +33,7 @@ public class ExternalService {
                     .retrieve()
                     .bodyToMono(CardUsage[].class)
                     .timeout(Duration.ofMillis(10000));
+
 //                    .block();
             cardUsage_list = webGetResponse.block();
         } catch (Exception  ex){

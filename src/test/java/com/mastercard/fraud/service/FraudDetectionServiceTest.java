@@ -130,38 +130,6 @@ public class FraudDetectionServiceTest {
         assertEquals(false, responseList.get(0).getIsApproved());
         assertEquals(expectedMessage, responseList.get(0).getMessage());
     }
-//
-//    @Test
-//    public void transactionBelowLimit_expectInvalidResponse() throws IOException {
-//        BigDecimal transactionHardLimit = new BigDecimal("50000");
-//        // Create sample request data
-//        AnalyzeRequest analyzeRequest = getJsonRequestTestData("src/test/resources/requestTestData/overTransactionHardLimit.json");
-//        CardUsageWeekly cardUsageWeekly = getCardUsageWeeklTestData("src/test/resources/cardUsageWeeklyTestData/validUsage.json");
-//
-//
-//        // Create sample request data
-//        List<BigInteger> cardNumList = new ArrayList<>();
-//        cardNumList.add(new BigInteger("5026840000000001"));
-//        List<BigDecimal> amountList = new ArrayList<>();
-//        amountList.add(new BigDecimal("-1.00"));
-//
-//        TransactionList transactionList = TransactionList.builder().cardNum(cardNumList).amount(amountList).build();
-//
-//        when(decisionRuleConfigMock.getTransactionHardLimit()).thenReturn(transactionHardLimit);
-//        when(mapperMock.transactionPOList(any(AnalyzeRequest.class))).thenReturn(transactionList);
-//        when(externalServiceMock.searchCardUsage(any(BigInteger.class))).thenReturn(cardUsageWeekly);
-//
-//        List<Response> responseList = fraudDetectionService.validateTransaction(analyzeRequest);
-//
-//        BigDecimal expectedTransactionAmount = new BigDecimal("-1.00");
-//        String expectedMessage = "Transaction amount is over max limit";
-//
-//        log.info(responseList.get(0).toString());
-//        assertEquals(1, responseList.size());
-//        assertEquals(expectedTransactionAmount, responseList.get(0).getTransactionAmount());
-//        assertEquals(false, responseList.get(0).getIsApproved());
-//        assertEquals(expectedMessage, responseList.get(0).getMessage());
-//    }
 
     @Test
     public void usageOverLimit_expectInvalidResponse() throws IOException {

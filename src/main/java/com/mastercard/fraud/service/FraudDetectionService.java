@@ -55,6 +55,7 @@ public class FraudDetectionService {
             if( amount.compareTo(minUsageAmount) < 0) {
                 isValid = false;
                 messageBuilder.append( String.format("Transaction amount is under min limit, Error Input: %s", amount));
+
             }
         }
 
@@ -99,12 +100,16 @@ public class FraudDetectionService {
         if( isCardOverused(cardUsageWeekly, decisionRuleConfig)) {
             return IsApproved.builder().isApproved(false).message("Usage is over max limit").build();
         }
+        return IsApproved.builder().isApproved(true).message("transaction approved").build();
+    }
+
 
         if( isOverAvgLimit(amount, cardUsageWeekly, decisionRuleConfig)) {
             return IsApproved.builder().isApproved(false).message("avergae spending is over limit").build();
         }
         return IsApproved.builder().isApproved(true).message("transaction approved").build();
     }
+
 
     private boolean isTransOverLimit(BigDecimal amount, DecisionRuleConfig decisionRuleConfig){
         return amount.compareTo(decisionRuleConfig.getTransactionHardLimit()) > 0;
@@ -115,6 +120,7 @@ public class FraudDetectionService {
     }
 
     private boolean isOverAvgLimit(BigDecimal amount, CardUsageWeekly cardUsageWeekly, DecisionRuleConfig decisionRuleConfig) throws ArithmeticException{
+
         if (amount.compareTo(new BigDecimal("0.00")) == 0) {
             return true;
         }
@@ -125,6 +131,7 @@ public class FraudDetectionService {
             }
         try{
             BigDecimal avgSpend = amount.divide(BigDecimal.valueOf(cardUsageWeekly.getTotalUsage()), 3, RoundingMode.CEILING);
+
             if( avgSpend.compareTo(decisionRuleConfig.getTransactionAvgLimit()) > 0 ) {
                 return true;
                 }

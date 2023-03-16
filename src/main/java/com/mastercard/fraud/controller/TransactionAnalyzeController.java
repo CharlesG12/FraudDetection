@@ -28,7 +28,6 @@ public class TransactionAnalyzeController {
 
         InputValidationResponse inputValidationResponse = fraudDetectionService.validateInput(analyzeRequest);
         if(!inputValidationResponse.isValid()) {
-            log.info(inputValidationResponse.getMessage());
             return AjaxResponse.fail(inputValidationResponse);
         }
 
@@ -36,4 +35,5 @@ public class TransactionAnalyzeController {
         ResponseDTO responseDTO = ResponseDTO.builder().responses(responseList).build();
         return AjaxResponse.success(responseDTO);
     }
+
 }
