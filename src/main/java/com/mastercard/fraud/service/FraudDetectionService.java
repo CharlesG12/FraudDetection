@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,7 +36,7 @@ public class FraudDetectionService {
         BigInteger minCardNum = analyzeRequest.getPropertiesRoot().getTransaction().getPropertiesTransaction().getCardNum().getMinimum();
         BigDecimal minUsageAmount = analyzeRequest.getPropertiesRoot().getTransaction().getPropertiesTransaction().getAmount().getMinimum();
 
-        Boolean isValid = true;
+        boolean isValid = true;
         StringBuilder messageBuilder = new StringBuilder();
 
         for( BigInteger cardNum : transactionList.getCardNum()) {
@@ -64,7 +65,7 @@ public class FraudDetectionService {
         List<Response> responseList = new ArrayList<>();
 
         TransactionList transactionList = mapper.transactionPOList(analyzeRequest);
-        Integer transactionCount = transactionList.getAmount().size();
+        int transactionCount = transactionList.getAmount().size();
 
         for (int i = 0; i < transactionCount; i++) {
             BigInteger cardNumber = transactionList.getCardNum().get(i);
@@ -106,20 +107,14 @@ public class FraudDetectionService {
     }
 
     private boolean isTransOverLimit(BigDecimal amount, DecisionRuleConfig decisionRuleConfig){
-        if(amount.compareTo(decisionRuleConfig.getTransactionHardLimit()) > 0) {
-            return true;
-        }
-        return false;
+        return amount.compareTo(decisionRuleConfig.getTransactionHardLimit()) > 0;
     }
 
     private boolean isCardOverused(CardUsageWeekly cardUsageWeekly, DecisionRuleConfig decisionRuleConfig){
-        if(cardUsageWeekly.getTotalUsage() > decisionRuleConfig.getUsageHardLimit()) {
-            return true;
-        }
-        return false;
+        return cardUsageWeekly.getTotalUsage() > decisionRuleConfig.getUsageHardLimit();
     }
 
-    private boolean isOverAvgLimit(BigDecimal amount, CardUsageWeekly cardUsageWeekly, DecisionRuleConfig decisionRuleConfig) {
+    private boolean isOverAvgLimit(BigDecimal amount, CardUsageWeekly cardUsageWeekly, DecisionRuleConfig decisionRuleConfig) throws ArithmeticException{
         if (amount.compareTo(new BigDecimal("0.00")) == 0) {
             return true;
         }
@@ -129,7 +124,7 @@ public class FraudDetectionService {
                 return false;
             }
         try{
-            BigDecimal avgSpend = amount.divide(BigDecimal.valueOf(cardUsageWeekly.getTotalUsage()));
+            BigDecimal avgSpend = amount.divide(BigDecimal.valueOf(cardUsageWeekly.getTotalUsage()), 3, RoundingMode.CEILING);
             if( avgSpend.compareTo(decisionRuleConfig.getTransactionAvgLimit()) > 0 ) {
                 return true;
                 }
@@ -137,6 +132,7 @@ public class FraudDetectionService {
         catch (ArithmeticException e) {
             log.info(e.getMessage());
             log.info(String.format("Error : amount: %s , totalUsage: %s", amount, cardUsageWeekly.getTotalUsage().toString()));
+            throw new ArithmeticException();
             }
         }
         return false;

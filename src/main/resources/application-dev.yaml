@@ -14,3 +14,31 @@ decision-rule:
 
 external-api:
   url: "http://www.randomnumberapi.com/api/v1.0/random?min=0&max=12&count=7"
+
+management:
+  server:
+    port: 8081
+  endpoint:
+    shutdown:
+      enabled: true
+    beans:
+      cache:
+        time-to-live: 10s
+  endpoints:
+    jmx:
+      exposure:
+        include: "*"
+        exclude: "env,beans"
+    web:
+      exposure:
+        include: "*"
+      base-path: /
+      path-mapping:
+        health: healthcheck
+#    web:
+#      base-path: "/"
+#      path-mapping:
+#        health: "healthcheck"
+#      cors:
+#        allowed-origins: "http://www.randomnumberapi.com"
+#        allowed-methods: "GET"

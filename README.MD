@@ -22,7 +22,12 @@ This is a simple credit card fraud detection service, provide a REST API.
 
     Alternatives:  
         Custom log mask pattern,  drawback: might impact performance, rules can be hard to define.
-        
 
 ### Load Test
     could implement Gatling.
+
+### SwaggerUI
+    http://localhost:8080/swagger-ui/index.html
+
+### Observability
+    http://localhost:8081/actuator

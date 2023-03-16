@@ -22,8 +22,16 @@
             5026840000000001
           ],
           "default": 9999999999999999
+        },
+        "amount": {
+          "title": "amount",
+          "type": "number",
+          "minimum": 0.00,
+          "examples": [
+            -3.99
+          ],
+          "default": 0.00
         }
-
       }
     }
   }
