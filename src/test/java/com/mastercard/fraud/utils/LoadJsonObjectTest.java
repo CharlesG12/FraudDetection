@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-public class JsonTest {
+public class LoadJsonObjectTest {
     @Test
     void testJsonRequestPOJOConversion() throws IOException {
         ObjectMapper mapper = new ObjectMapper();

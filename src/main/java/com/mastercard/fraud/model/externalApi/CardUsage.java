@@ -9,6 +9,6 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class CardUsagePO {
+public class CardUsage {
     private Integer Usage;
 }

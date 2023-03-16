@@ -1,22 +1,22 @@
 package com.mastercard.fraud.service;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-import com.mastercard.fraud.model.externalApi.CardUsageDto;
+import com.mastercard.fraud.config.ExternalApiConfig;
+import com.mastercard.fraud.model.externalApi.CardUsageWeekly;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentMatchers;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.client.WebClient.ResponseSpec;
-
-import com.mastercard.fraud.model.externalApi.CardUsagePO;
-
+import com.mastercard.fraud.model.externalApi.CardUsage;
+import reactor.core.publisher.Mono;
 import java.math.BigInteger;
 
 
@@ -24,46 +24,57 @@ import java.math.BigInteger;
 @SpringBootTest
 @AutoConfigureMockMvc
 @ExtendWith(MockitoExtension.class)
-class ExternalServiceTest {
-    @Mock
+public class ExternalServiceTest {
+    @InjectMocks
     private ExternalService externalService;
 
+    @Mock
+    private WebClient webClientMock;
+
+    @Mock
+    private ExternalApiConfig externalApiConfigMock;
+
+    @Mock
+    private WebClient.RequestBodyUriSpec requestBodyUriSpecMock;
+
+    @Mock
+    private WebClient.RequestBodySpec requestBodySpecMock;
+
+    @SuppressWarnings("rawtypes")
+    @Mock
+    private WebClient.RequestHeadersSpec requestHeadersSpecMock;
+
+    @SuppressWarnings("rawtypes")
+    @Mock
+    private WebClient.RequestHeadersUriSpec requestHeadersUriSpecMock;
+
+    @Mock
+    private WebClient.ResponseSpec responseSpecMock;
+
+
+    @SuppressWarnings("unchecked")
     @Test
-    void testSearchCardUsage() {
-        // arrange
-        BigInteger cardNum = new BigInteger("1234567890123456");
-        Integer totalUsage = 0;
-        CardUsagePO[] cardUsageList = new CardUsagePO[7];
-        for (int i = 0; i < cardUsageList.length; i++) {
-            cardUsageList[i] = new CardUsagePO(i+1);
-            totalUsage += i+1;
+    public void test() {
+
+        CardUsage[] postList  = new CardUsage[7];
+        Integer[] validNums = new Integer[]{1, 2, 3, 4, 5, 6, 7};
+        Integer sum = 0;
+        for (int i = 0; i < validNums.length; i++) {
+            CardUsage usage = CardUsage.builder().Usage(validNums[i]).build();
+            postList[i] = usage;
+            sum += validNums[i];
         }
 
-        CardUsageDto expectedCardUsage = CardUsageDto
-                .builder()
-                .weeklyUsage(cardUsageList)
-                .totalUsage(totalUsage)
-                .build();
+        when(externalApiConfigMock.getUrl()).thenReturn("testUrl");
+        when(webClientMock.get()).thenReturn(requestHeadersUriSpecMock);
+        when(requestHeadersUriSpecMock.uri(anyString())).thenReturn(requestHeadersSpecMock);
+        when(requestHeadersSpecMock.retrieve()).thenReturn(responseSpecMock);
+        when(responseSpecMock.bodyToMono(
+                ArgumentMatchers.<Class<CardUsage[]>>notNull())).thenReturn(Mono.just(postList));
 
-        WebClient webClientMock = mock(WebClient.class);
-        ResponseSpec responseSpecMock = mock(ResponseSpec.class);
-
-        when(externalService.searchCardUsage(cardNum)).thenReturn(expectedCardUsage);
-
-//        when(responseSpecMock.bodyToMono(CardUsagePO[].class)).thenReturn(
-//                Mono.just(expectedCardUsage)
-//        );
-
-        // act
-        CardUsageDto actualCardUsage = externalService.searchCardUsage(cardNum);
-
-        log.info(actualCardUsage.toString());
-        // assert
-//        Assertions.assertArrayEquals(expectedCardUsage, actualCardUsage);
-//        assertThat(actualCardUsage.length).isNotNull();;
+        CardUsageWeekly response = externalService.searchCardUsage(BigInteger.ONE);
+        Assertions.assertEquals("ok", response.getMessage());
+        Assertions.assertEquals(sum, response.getTotalUsage());
+        Assertions.assertEquals(postList, response.getWeeklyUsage());
     }
-
-
-
-
 }

@@ -14,4 +14,15 @@ This is a simple credit card fraud detection service, provide a REST API.
     Test - unit test(integration test), coverage report, load-test.
     service should be able to handle and respond to input errors.
     service should log the following underlined transaction information for debugging
+    There should have a time limit for connect to external api.
 
+### Obfuscate Card Number
+    Achieved by override toString function in model
+    Drawback: can accidently call other function to print out the cardNum.
+
+    Alternatives:  
+        Custom log mask pattern,  drawback: might impact performance, rules can be hard to define.
+        
+
+### Load Test
+    could implement Gatling.

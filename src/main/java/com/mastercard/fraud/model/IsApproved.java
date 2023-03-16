@@ -1,4 +1,4 @@
-package com.mastercard.fraud.model.externalApi;
+package com.mastercard.fraud.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,8 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class CardUsageDto {
-    private CardUsagePO[] weeklyUsage;
-    private Integer totalUsage;
+public class IsApproved {
+    private boolean isApproved;
     private String message;
 }
