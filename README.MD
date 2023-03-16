@@ -12,8 +12,8 @@ This is a simple credit card fraud detection service, provide a REST API.
     Monitoring -endpoint to show basic stats
     Packaging- build a docker image
     Test - unit test(integration test), coverage report, load-test.
-    service should be able to handle and respond to input errors.
-    service should log the following underlined transaction information for debugging
+    Service should be able to handle and respond to input errors.
+    Service should log the following underlined transaction information for debugging
     There should have a time limit for connect to external api.
 
 ### Obfuscate Card Number
@@ -24,6 +24,15 @@ This is a simple credit card fraud detection service, provide a REST API.
     Alternatives:  
         Custom log mask pattern,  drawback: might impact performance, rules can be hard to define.
 
+### Unit Test
+    coverage: 
+        Class: 100%
+        Method: 100%
+        Line: 93%
+
+    The 7% untested line is from mapstruct auto generated lines.
+    Since it's a lot line about test if the input is null, so used null object to test against part of the mapstruct object.
+
 ### Load Test
     Jmeter or Gatling
 
@@ -31,7 +40,12 @@ This is a simple credit card fraud detection service, provide a REST API.
     http://localhost:8080/swagger-ui/index.html
 
 ### Observability
-    http://localhost:8081/actuator
+    http://localhost:8081/
+
+    Here enabled expose all information on the port in the dev profile, can limit the exposure in test or prod profile.
+
+    Ideally would have a system to collect customed metrics and expose to port, 
+    use promethus to scrap the metrics and Grafana for visualization.
 
 ### Docker Image
     docker build -t mastercard-fraud-server .
