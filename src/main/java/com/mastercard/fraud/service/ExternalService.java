@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
+
 import java.math.BigInteger;
 import java.time.Duration;
 import java.util.Arrays;
@@ -33,6 +34,7 @@ public class ExternalService {
                     .retrieve()
                     .bodyToMono(CardUsage[].class)
                     .timeout(Duration.ofMillis(10000));
+
 //                    .block();
             cardUsage_list = webGetResponse.block();
         } catch (Exception  ex){

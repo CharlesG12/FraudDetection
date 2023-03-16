@@ -32,6 +32,7 @@ public class FraudDetectionIntegrationTest {
         InputValidationResponse inputValidationResponse = fraudDetectionService.validateInput(analyzeRequest);
 
         log.info(inputValidationResponse.toString());
+
     }
 
     @Test
@@ -40,6 +41,7 @@ public class FraudDetectionIntegrationTest {
         InputValidationResponse inputValidationResponse = fraudDetectionService.validateInput(analyzeRequest);
 
         log.info(inputValidationResponse.toString());
+
     }
 
     public AnalyzeRequest getJsonRequestTestData(String path) throws IOException {

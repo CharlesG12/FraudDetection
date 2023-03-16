@@ -130,6 +130,7 @@ public class FraudDetectionServiceTest {
         assertEquals(false, responseList.get(0).getIsApproved());
         assertEquals(expectedMessage, responseList.get(0).getMessage());
     }
+
 //
 //    @Test
 //    public void transactionBelowLimit_expectInvalidResponse() throws IOException {
@@ -162,6 +163,7 @@ public class FraudDetectionServiceTest {
 //        assertEquals(false, responseList.get(0).getIsApproved());
 //        assertEquals(expectedMessage, responseList.get(0).getMessage());
 //    }
+
 
     @Test
     public void usageOverLimit_expectInvalidResponse() throws IOException {
