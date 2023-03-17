@@ -1,6 +1,7 @@
 # Bank Fraud Detection Service
 
-This is a simple credit card fraud detection service, provide a REST API.
+This is a simple credit card fraud detection service, provide a REST API endpoint named "/analyzeTransaction" that takes in a json object of 1 transaction with properties for card number and transaction amount. Calls another service to get information regarding the transaction, and 
+then applies some business logic before returning a decision to approve or decline the transaction.
 
 ## Functional Requirement
     Service has 1 endpoint ( "/analyzeTransaction") takes in serveral parameters as inputs
@@ -23,6 +24,11 @@ This is a simple credit card fraud detection service, provide a REST API.
         2. Card number is over maximum: Message:          Response with isValid : False,  Message: Card number is over Max limit, Error Input
         3. Card number is under minimum:                  Response with isValid : False,  Message: Card number is under Min limit, Error Input
         4. Transaction Amount is under minimum:           Response with isValid : False,  Message with: Transaction amount is under min limit, Error Input
+
+### External API connection
+    The system design includes calling an external API to retrieve data, and if the API fails to return data within a specified time limit, an exception will be thrown. 
+    If no data is returned, a "not found" error message will be returned to the requester. 
+    In the event of a server outage or other disruption of the external API, the system is designed to provide randomly generated data to ensure continued service availability. This feature is intended for development and testing purposes only.
 
 
 ### Obfuscate Card Number
