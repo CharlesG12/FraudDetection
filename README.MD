@@ -17,8 +17,15 @@ then applies some business logic before returning a decision to approve or decli
     Service should log the following underlined transaction information for debugging
     
     Add a time limit for connect to external api.
+    
+## Business Logic
+    If the amount of a transaction is over $50,000.00 decline the transaction.
+    If the card has been used over 60 times in the last 7 days, decline the transaction.
+    If the card has been used under 35 times in the last 7 days, decline the transaction if the (transaction amount/times used in last 7 days) > 500. (E.
+    g. Decline if transaction amount is $9000 and the card has been used 2 times in the last 7 days. 9000/2 = 4500)
+    Approve all other transactions
 
-## Input Error Handling
+### Input Error Handling
     The request body would be checked: 
         1. Card number and amount count does not match:   Response with isValid : False,  Message: Input amount count does not match card number count
         2. Card number is over maximum: Message:          Response with isValid : False,  Message: Card number is over Max limit, Error Input
@@ -32,15 +39,9 @@ then applies some business logic before returning a decision to approve or decli
 
 
 ### Obfuscate Card Number
-    Achieved by override toString function in model
-    Drawback: can accidently call other function to print out the cardNum.
-    Only mask the carNumber when the length is over 13.
+    The system achieves masking of credit card numbers by overriding the toString() function in the ResponseVO, Response, and CardNum model classes. The implementation masks the card number only if its length is over 13 digits. However, this approach may have the drawback of accidentally calling other functions that print out the card number, leading to unintended disclosure.
 
-    affected class:
-        ResponseVO, Response, CardNum
-
-    Alternatives:  
-        Custom log mask pattern,  drawback: might impact performance, rules can be hard to define.
+An alternative approach to masking credit card numbers is to use a custom log mask pattern. This approach may impact system performance, and the rules for defining the masking pattern may be complex. Nevertheless, this approach offers the advantage of greater flexibility in masking patterns and can provide more robust protection of sensitive data.
 
 ### Unit Test
     coverage: 
@@ -48,7 +49,7 @@ then applies some business logic before returning a decision to approve or decli
         Method: 100%
         Line: 95%
 
-    The 7% untested line is from mapstruct auto generated lines.
+    The 5% untested line is from mapstruct auto generated lines.
     Since it's a lot line about test if the input is null, so used null object to test against part of the mapstruct object.
 
 ### Load Test
@@ -56,19 +57,21 @@ then applies some business logic before returning a decision to approve or decli
 
 ### SwaggerUI
     http://localhost:8080/swagger-ui/index.html
+    
+### Endpoint
+    http://localhost:8080/analyzeTransaction
 
 ### Observability
     http://localhost:8081/
 
     Here enabled expose all information on the port in the dev profile, can limit the exposure in test or prod profile.
 
-    Ideally would have a system to collect customed metrics and expose to port, 
-    use promethus to scrap the metrics and Grafana for visualization.
+    Ideally would have a system to collect customed metrics and expose to port, use promethus to scrap the metrics and Grafana for visualization. Can also add istio and visulize the traffic use kiali.
 
 ### Docker Image
     docker build -t mastercard-fraud-server .
     docker run -p 8080:8080 -p 8081:8081 mastercard-fraud-server
 
 
-## UML Diagram
+### UML Diagram
 ![My Image](UMLDiagram.png)
