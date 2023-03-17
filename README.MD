@@ -68,3 +68,7 @@ then applies some business logic before returning a decision to approve or decli
 ### Docker Image
     docker build -t mastercard-fraud-server .
     docker run -p 8080:8080 -p 8081:8081 mastercard-fraud-server
+
+
+## UML Diagram
+![My Image](UMLDiagram.png)
