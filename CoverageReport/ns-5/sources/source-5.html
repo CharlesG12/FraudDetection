@@ -4,7 +4,7 @@
 <!DOCTYPE html>
 <html id="htmlId">
 <head>
-  <title>Coverage Report > AnalyzeRequest</title>
+  <title>Coverage Report > ResponseDTO</title>
   <style type="text/css">
     @import "../../css/coverage.css";
     @import "../../css/idea.min.css";
@@ -18,10 +18,10 @@
 <div class="breadCrumbs">
 Current scope:     <a href="../../index.html">all classes</a>
     <span class="separator">|</span>
-    <a href="../index.html">com.mastercard.fraud.model.transactionPost</a>
+    <a href="../index.html">com.mastercard.fraud.model</a>
 </div>
 
-<h1>Coverage Summary for Class: AnalyzeRequest (com.mastercard.fraud.model.transactionPost)</h1>
+<h1>Coverage Summary for Class: ResponseDTO (com.mastercard.fraud.model)</h1>
 
 <table class="coverageStats">
 
@@ -29,7 +29,7 @@ Current scope:     <a href="../../index.html">all classes</a>
   <th class="name">Class</th>
 </tr>
   <tr>
-    <td class="name">AnalyzeRequest$AnalyzeRequestBuilder</td>
+    <td class="name">ResponseDTO$ResponseDTOBuilder</td>
   </tr>
 <tr>
   <td class="name"><strong>Total</strong></td>
@@ -41,9 +41,8 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 
 <pre>
-<code class="sourceCode" id="sourceCode">&nbsp;package com.mastercard.fraud.model.transactionPost;
+<code class="sourceCode" id="sourceCode">&nbsp;package com.mastercard.fraud.model;
 &nbsp;
-&nbsp;import com.fasterxml.jackson.annotation.JsonProperty;
 &nbsp;import lombok.AllArgsConstructor;
 &nbsp;import lombok.Builder;
 &nbsp;import lombok.Data;
@@ -52,18 +51,11 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;import java.util.List;
 &nbsp;
 &nbsp;@Data
-&nbsp;@Builder
 &nbsp;@AllArgsConstructor
 &nbsp;@NoArgsConstructor
-&nbsp;public class AnalyzeRequest {
-&nbsp;    private String title;
-&nbsp;
-&nbsp;    private String type;
-&nbsp;
-&nbsp;    private List&lt;String&gt; required;
-&nbsp;
-&nbsp;    @JsonProperty(&quot;properties&quot;)
-&nbsp;    private PropertiesRoot propertiesRoot;
+&nbsp;@Builder
+&nbsp;public class ResponseDTO {
+&nbsp;    List&lt;ResponseVO&gt; responses;
 &nbsp;}
 </code>
 </pre>
@@ -88,7 +80,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2023-03-16 15:46</div>
+    <div style="float:right;">generated on 2023-03-19 00:42</div>
 </div>
 </body>
 </html>

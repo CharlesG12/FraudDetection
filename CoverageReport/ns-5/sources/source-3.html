@@ -4,7 +4,7 @@
 <!DOCTYPE html>
 <html id="htmlId">
 <head>
-  <title>Coverage Report > Amount</title>
+  <title>Coverage Report > IsApproved</title>
   <style type="text/css">
     @import "../../css/coverage.css";
     @import "../../css/idea.min.css";
@@ -18,10 +18,10 @@
 <div class="breadCrumbs">
 Current scope:     <a href="../../index.html">all classes</a>
     <span class="separator">|</span>
-    <a href="../index.html">com.mastercard.fraud.model.transactionPost</a>
+    <a href="../index.html">com.mastercard.fraud.model</a>
 </div>
 
-<h1>Coverage Summary for Class: Amount (com.mastercard.fraud.model.transactionPost)</h1>
+<h1>Coverage Summary for Class: IsApproved (com.mastercard.fraud.model)</h1>
 
 <table class="coverageStats">
 
@@ -29,7 +29,7 @@ Current scope:     <a href="../../index.html">all classes</a>
   <th class="name">Class</th>
 </tr>
   <tr>
-    <td class="name">Amount$AmountBuilder</td>
+    <td class="name">IsApproved$IsApprovedBuilder</td>
   </tr>
 <tr>
   <td class="name"><strong>Total</strong></td>
@@ -41,26 +41,20 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 
 <pre>
-<code class="sourceCode" id="sourceCode">&nbsp;package com.mastercard.fraud.model.transactionPost;
+<code class="sourceCode" id="sourceCode">&nbsp;package com.mastercard.fraud.model;
 &nbsp;
-&nbsp;import com.fasterxml.jackson.annotation.JsonProperty;
-&nbsp;import lombok.*;
-&nbsp;
-&nbsp;import java.math.BigDecimal;
-&nbsp;import java.util.List;
+&nbsp;import lombok.AllArgsConstructor;
+&nbsp;import lombok.Builder;
+&nbsp;import lombok.Data;
+&nbsp;import lombok.NoArgsConstructor;
 &nbsp;
 &nbsp;@Data
-&nbsp;@Builder
 &nbsp;@AllArgsConstructor
 &nbsp;@NoArgsConstructor
-&nbsp;public class Amount {
-&nbsp;    private String title;
-&nbsp;    private String type;
-&nbsp;    private BigDecimal minimum;
-&nbsp;    private List&lt;BigDecimal&gt; examples;
-&nbsp;    @JsonProperty(&quot;default&quot;)
-&nbsp;    private BigDecimal defaultAmount;
-&nbsp;
+&nbsp;@Builder
+&nbsp;public class IsApproved {
+&nbsp;    private boolean isApproved;
+&nbsp;    private String message;
 &nbsp;}
 </code>
 </pre>
@@ -85,7 +79,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2023-03-16 15:46</div>
+    <div style="float:right;">generated on 2023-03-19 00:42</div>
 </div>
 </body>
 </html>

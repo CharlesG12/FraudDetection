@@ -4,7 +4,7 @@
 <!DOCTYPE html>
 <html id="htmlId">
 <head>
-  <title>Coverage Report > CardNum</title>
+  <title>Coverage Report > Response</title>
   <style type="text/css">
     @import "../../css/coverage.css";
     @import "../../css/idea.min.css";
@@ -18,10 +18,10 @@
 <div class="breadCrumbs">
 Current scope:     <a href="../../index.html">all classes</a>
     <span class="separator">|</span>
-    <a href="../index.html">com.mastercard.fraud.model.transactionPost</a>
+    <a href="../index.html">com.mastercard.fraud.model</a>
 </div>
 
-<h1>Coverage Summary for Class: CardNum (com.mastercard.fraud.model.transactionPost)</h1>
+<h1>Coverage Summary for Class: Response (com.mastercard.fraud.model)</h1>
 
 <table class="coverageStats">
 
@@ -37,7 +37,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 </th>
 </tr>
 <tr>
-  <td class="name">CardNum</td>
+  <td class="name">Response</td>
 <td class="coverageStat">
   <span class="percent">
     100%
@@ -51,12 +51,12 @@ Current scope:     <a href="../../index.html">all classes</a>
     100%
   </span>
   <span class="absValue">
-    (10/10)
+    (5/5)
   </span>
 </td>
 </tr>
   <tr>
-    <td class="name">CardNum$CardNumBuilder</td>
+    <td class="name">Response$ResponseBuilder</td>
   </tr>
 <tr>
   <td class="name"><strong>Total</strong></td>
@@ -73,7 +73,7 @@ Current scope:     <a href="../../index.html">all classes</a>
     100%
   </span>
   <span class="absValue">
-    (10/10)
+    (5/5)
   </span>
 </td>
 </tr>
@@ -84,9 +84,8 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 
 <pre>
-<code class="sourceCode" id="sourceCode">&nbsp;package com.mastercard.fraud.model.transactionPost;
+<code class="sourceCode" id="sourceCode">&nbsp;package com.mastercard.fraud.model;
 &nbsp;
-&nbsp;import com.fasterxml.jackson.annotation.JsonProperty;
 &nbsp;import lombok.AllArgsConstructor;
 &nbsp;import lombok.Builder;
 &nbsp;import lombok.Data;
@@ -94,39 +93,27 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;
 &nbsp;import java.math.BigDecimal;
 &nbsp;import java.math.BigInteger;
-&nbsp;import java.util.List;
 &nbsp;
 &nbsp;@Data
-&nbsp;@Builder
-&nbsp;@AllArgsConstructor
 &nbsp;@NoArgsConstructor
-&nbsp;public class CardNum {
-&nbsp;    private String title;
-&nbsp;    private String type;
-&nbsp;    private BigInteger minimum;
-&nbsp;    private BigInteger maximum;
-&nbsp;    private List&lt;BigInteger&gt; examples;
-&nbsp;    @JsonProperty(&quot;default&quot;)
-&nbsp;    private BigInteger defaultAmount;
-&nbsp;
+&nbsp;@AllArgsConstructor
+&nbsp;@Builder
+&nbsp;public class Response {
+&nbsp;    private BigInteger CardNumber;
+&nbsp;    private BigDecimal TransactionAmount;
+&nbsp;    private Boolean isApproved;
+&nbsp;    private Integer weeklyUseFrequency;
+&nbsp;    private String message;
 &nbsp;
 &nbsp;    @Override
 &nbsp;    public String toString() {
-<b class="fc">&nbsp;        String var10000 = this.getTitle();</b>
+<b class="fc">&nbsp;        String cardNum = this.getCardNumber().toString();</b>
+<b class="fc">&nbsp;        StringBuilder builder = new StringBuilder(cardNum);</b>
+<b class="fc">&nbsp;        if(cardNum.length() &gt; 13 ) {</b>
+<b class="fc">&nbsp;            builder.replace(4, 12, &quot;********&quot;);</b>
+&nbsp;        }
 &nbsp;
-<b class="fc">&nbsp;        List&lt;BigInteger&gt; valueList = this.getExamples();</b>
-<b class="fc">&nbsp;        StringBuilder result = new StringBuilder(&quot;&quot;);</b>
-&nbsp;
-<b class="fc">&nbsp;        for(BigInteger value: valueList) {</b>
-<b class="fc">&nbsp;            StringBuilder builder = new StringBuilder(value.toString());</b>
-<b class="fc">&nbsp;            if(value.toString().length() &gt; 13 ) {</b>
-<b class="fc">&nbsp;                builder.replace(4, 12, &quot;********&quot;);</b>
-&nbsp;            }
-<b class="fc">&nbsp;            result.append(builder);</b>
-<b class="fc">&nbsp;        }</b>
-&nbsp;
-&nbsp;
-<b class="fc">&nbsp;        return &quot;CardNum(title=&quot; + var10000 + &quot;, type=&quot; + this.getType() + &quot;, minimum=&quot; + this.getMinimum() + &quot;, maximum=&quot; + this.getMaximum() + &quot;, examples=&quot; + result + &quot;, defaultAmount=&quot; + this.getDefaultAmount() + &quot;)&quot;;</b>
+<b class="fc">&nbsp;        return &quot;Response(CardNumber=&quot; + builder.toString() + &quot;, TransactionAmount=&quot; + this.getTransactionAmount() + &quot;, isApproved=&quot; + this.getIsApproved() + &quot;, weeklyUseFrequency=&quot; + this.getWeeklyUseFrequency() + &quot;, message=&quot; + this.getMessage() + &quot;)&quot;;</b>
 &nbsp;    }
 &nbsp;
 &nbsp;}
@@ -153,7 +140,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2023-03-16 15:46</div>
+    <div style="float:right;">generated on 2023-03-19 00:42</div>
 </div>
 </body>
 </html>

@@ -62,7 +62,7 @@ Current scope:     <a href="../../index.html">all classes</a>
     100%
   </span>
   <span class="absValue">
-    (11/11)
+    (8/8)
   </span>
 </td>
 </tr>
@@ -75,13 +75,14 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <pre>
 <code class="sourceCode" id="sourceCode">&nbsp;package com.mastercard.fraud.controller;
+&nbsp;import com.mastercard.fraud.exception.CustomException;
 &nbsp;import com.mastercard.fraud.model.InputValidationResponse;
 &nbsp;import com.mastercard.fraud.model.Response;
 &nbsp;import com.mastercard.fraud.model.ResponseDTO;
 &nbsp;import com.mastercard.fraud.model.ResponseVO;
 &nbsp;import com.mastercard.fraud.model.transactionPost.AnalyzeRequest;
 &nbsp;import com.mastercard.fraud.service.FraudDetectionService;
-&nbsp;import com.mastercard.fraud.utils.AjaxResponse;
+&nbsp;import com.mastercard.fraud.exception.AjaxResponse;
 &nbsp;import com.mastercard.fraud.utils.TransactionMapper;
 &nbsp;import jakarta.annotation.Resource;
 &nbsp;import lombok.extern.slf4j.Slf4j;
@@ -105,11 +106,18 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;    public AjaxResponse analyzeTransaction(@RequestBody AnalyzeRequest analyzeRequest) {
 <b class="fc">&nbsp;        log.info(&quot;analyze transaction post request:&quot; + analyzeRequest);</b>
 &nbsp;
-<b class="fc">&nbsp;        InputValidationResponse inputValidationResponse = fraudDetectionService.validateInput(analyzeRequest);</b>
-<b class="fc">&nbsp;        if(!inputValidationResponse.isValid()) {</b>
-<b class="fc">&nbsp;            log.info(inputValidationResponse.getMessage());</b>
-<b class="fc">&nbsp;            return AjaxResponse.fail(inputValidationResponse);</b>
-&nbsp;        }
+<b class="fc">&nbsp;        fraudDetectionService.validateInput(analyzeRequest);</b>
+&nbsp;
+&nbsp;
+&nbsp;//        try {
+&nbsp;//            fraudDetectionService.validateInput(analyzeRequest);
+&nbsp;//        } catch(CustomException e) {
+&nbsp;//            return AjaxResponse.error(e);
+&nbsp;//        }
+&nbsp;//        if(!inputValidationResponse.isValid()) {
+&nbsp;//            log.info(inputValidationResponse.getMessage());
+&nbsp;//            return AjaxResponse.fail(inputValidationResponse);
+&nbsp;//        }
 &nbsp;
 <b class="fc">&nbsp;        List&lt;Response&gt; responseList = fraudDetectionService.validateTransaction(analyzeRequest);</b>
 <b class="fc">&nbsp;        List&lt;ResponseVO&gt; responseVOList = mapper.responseVO(responseList);</b>
@@ -140,7 +148,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2023-03-16 15:46</div>
+    <div style="float:right;">generated on 2023-03-19 00:42</div>
 </div>
 </body>
 </html>

@@ -4,7 +4,7 @@
 <!DOCTYPE html>
 <html id="htmlId">
 <head>
-  <title>Coverage Report > CardUsage</title>
+  <title>Coverage Report > TransactionMapper</title>
   <style type="text/css">
     @import "../../css/coverage.css";
     @import "../../css/idea.min.css";
@@ -18,21 +18,70 @@
 <div class="breadCrumbs">
 Current scope:     <a href="../../index.html">all classes</a>
     <span class="separator">|</span>
-    <a href="../index.html">com.mastercard.fraud.model.externalApi</a>
+    <a href="../index.html">com.mastercard.fraud.utils</a>
 </div>
 
-<h1>Coverage Summary for Class: CardUsage (com.mastercard.fraud.model.externalApi)</h1>
+<h1>Coverage Summary for Class: TransactionMapper (com.mastercard.fraud.utils)</h1>
 
 <table class="coverageStats">
 
 <tr>
   <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">TransactionMapper</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
 </tr>
   <tr>
-    <td class="name">CardUsage$CardUsageBuilder</td>
+    <td class="name">TransactionMapper$MockitoMock$EO9CfJQt</td>
+  </tr>
+  <tr>
+    <td class="name">TransactionMapper$MockitoMock$EO9CfJQt$auxiliary$Odf9h5yl</td>
+  </tr>
+  <tr>
+    <td class="name">TransactionMapper$MockitoMock$EO9CfJQt$auxiliary$T3mRs1bo</td>
   </tr>
 <tr>
   <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
 </tr>
 </table>
 
@@ -41,19 +90,40 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 
 <pre>
-<code class="sourceCode" id="sourceCode">&nbsp;package com.mastercard.fraud.model.externalApi;
+<code class="sourceCode" id="sourceCode">&nbsp;package com.mastercard.fraud.utils;
 &nbsp;
-&nbsp;import lombok.AllArgsConstructor;
-&nbsp;import lombok.Builder;
-&nbsp;import lombok.Data;
-&nbsp;import lombok.NoArgsConstructor;
+&nbsp;import com.mastercard.fraud.model.Response;
+&nbsp;import com.mastercard.fraud.model.ResponseVO;
+&nbsp;import com.mastercard.fraud.model.TransactionList;
+&nbsp;import com.mastercard.fraud.model.transactionPost.AnalyzeRequest;
+&nbsp;import org.mapstruct.Mapping;
+&nbsp;import org.mapstruct.Mappings;
+&nbsp;import org.mapstruct.factory.Mappers;
+&nbsp;import org.mapstruct.Mapper;
 &nbsp;
-&nbsp;@Data
-&nbsp;@Builder
-&nbsp;@AllArgsConstructor
-&nbsp;@NoArgsConstructor
-&nbsp;public class CardUsage {
-&nbsp;    private Integer Usage;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;
+&nbsp;@Mapper(componentModel = &quot;spring&quot;)
+&nbsp;public interface TransactionMapper {
+<b class="fc">&nbsp;    TransactionMapper mapper = Mappers.getMapper(TransactionMapper.class);</b>
+&nbsp;
+&nbsp;    @Mappings({
+&nbsp;            @Mapping(target = &quot;cardNum&quot;, source = &quot;propertiesRoot.transaction.propertiesTransaction.cardNum.examples&quot;),
+&nbsp;            @Mapping(target = &quot;amount&quot;, source = &quot;propertiesRoot.transaction.propertiesTransaction.amount.examples&quot;)
+&nbsp;
+&nbsp;    })
+&nbsp;    TransactionList transactionPOList(AnalyzeRequest analyzeRequest);
+&nbsp;
+&nbsp;    @Mappings({
+&nbsp;            @Mapping(target = &quot;cardNumber&quot;, source = &quot;cardNumber&quot;),
+&nbsp;            @Mapping(target = &quot;transactionAmount&quot;, source = &quot;transactionAmount&quot;),
+&nbsp;            @Mapping(target = &quot;isApproved&quot;, source = &quot;isApproved&quot;),
+&nbsp;            @Mapping(target = &quot;weeklyUseFrequency&quot;, source = &quot;weeklyUseFrequency&quot;)
+&nbsp;    })
+&nbsp;    ResponseVO responseVO(Response response);
+&nbsp;
+&nbsp;    List&lt;ResponseVO&gt; responseVO(List&lt;Response&gt; response);
 &nbsp;}
 </code>
 </pre>
@@ -78,7 +148,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2023-03-16 15:46</div>
+    <div style="float:right;">generated on 2023-03-19 00:42</div>
 </div>
 </body>
 </html>
