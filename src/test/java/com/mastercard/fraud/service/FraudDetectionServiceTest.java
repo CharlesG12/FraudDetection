@@ -1,6 +1,7 @@
 package com.mastercard.fraud.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mastercard.fraud.config.DecisionRuleConfig;
+import com.mastercard.fraud.exception.CustomException;
 import com.mastercard.fraud.model.InputValidationResponse;
 import com.mastercard.fraud.model.Response;
 import com.mastercard.fraud.model.TransactionList;
@@ -16,6 +17,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import javax.swing.undo.CannotUndoException;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -32,7 +35,6 @@ import static org.mockito.Mockito.*;
 @AutoConfigureMockMvc
 @ExtendWith(MockitoExtension.class)
 public class FraudDetectionServiceTest {
-
     @Mock
     private ExternalService externalServiceMock;
 
@@ -48,9 +50,7 @@ public class FraudDetectionServiceTest {
     @Test
     public void cardNumError_expectInvalidResponse() throws IOException {
         // Create sample request data
-//        AnalyzeRequest analyzeRequest = getJsonRequestTestData("src/test/resources/requestTestData/cardNumberError.json");
         AnalyzeRequest analyzeRequest = getJsonRequestTestData("src/test/resources/sample.json");
-//        AnalyzeRequest analyzeRequest = getJsonRequestTestData("src/test/resources/requestTestData/swaggerDefault.json");
 
         // Create sample request data
         List<BigInteger> cardNumList = new ArrayList<>();
@@ -64,20 +64,17 @@ public class FraudDetectionServiceTest {
 
         when(mapperMock.transactionPOList(any(AnalyzeRequest.class))).thenReturn(transactionList);
 
-        InputValidationResponse inputValidationResponse= fraudDetectionService.validateInput(analyzeRequest);
+        CustomException customException = assertThrows(CustomException.class,
+                () -> fraudDetectionService.validateInput(analyzeRequest));
 
-        String expectedMessage = "Card number is over Max limit, Error Input: 10000000000000001Card number is under Min limit, Error Input: 999999999999999";
-
-        assertEquals(false, inputValidationResponse.isValid());
-        assertEquals(expectedMessage, inputValidationResponse.getMessage());
+        assertEquals("card number is bigger than max card num", customException.getMessage());
+        assertEquals(400, customException.getCode());
     }
 
     @Test
     public void requestCountNotMatch_expectInvalidResponse() throws IOException {
         // Create sample request data
-//        AnalyzeRequest analyzeRequest = getJsonRequestTestData("src/test/resources/requestTestData/countNotMatch.json");
         AnalyzeRequest analyzeRequest = getJsonRequestTestData("src/test/resources/sample.json");
-
 
         // Create sample request data
         List<BigInteger> cardNumList = new ArrayList<>();
@@ -90,13 +87,11 @@ public class FraudDetectionServiceTest {
 
         when(mapperMock.transactionPOList(any(AnalyzeRequest.class))).thenReturn(transactionList);
 
-        InputValidationResponse inputValidationResponse= fraudDetectionService.validateInput(analyzeRequest);
+        CustomException customException = assertThrows(CustomException.class,
+                () -> fraudDetectionService.validateInput(analyzeRequest));
 
-        String expectedMessage = "Input amount count does not match card number count";
-
-        log.info(inputValidationResponse.toString());
-        assertEquals(false, inputValidationResponse.isValid());
-        assertEquals(expectedMessage, inputValidationResponse.getMessage());
+        assertEquals("Input amount count does not match card number count", customException.getMessage());
+        assertEquals(400, customException.getCode());
     }
 
     @Test
@@ -105,7 +100,6 @@ public class FraudDetectionServiceTest {
         // Create sample request data
         AnalyzeRequest analyzeRequest = getJsonRequestTestData("src/test/resources/requestTestData/overTransactionHardLimit.json");
         CardUsageWeekly cardUsageWeekly = getCardUsageWeeklTestData("src/test/resources/cardUsageWeeklyTestData/validUsage.json");
-
 
         // Create sample request data
         List<BigInteger> cardNumList = new ArrayList<>();
@@ -194,7 +188,6 @@ public class FraudDetectionServiceTest {
 
         List<Response> responseList = fraudDetectionService.validateTransaction(analyzeRequest);
 
-
         BigDecimal expectedTransactionAmount = new BigDecimal("33.00");
         String expectedMessage = "Usage is over max limit";
         Integer expectedUsage = 70;
@@ -241,9 +234,7 @@ public class FraudDetectionServiceTest {
         when(decisionRuleConfigMock.getUsageHardLimit()).thenReturn(usageHardLimit);
         when(decisionRuleConfigMock.getUsageSoftLimit()).thenReturn(usageSoftLimit);
 
-
         List<Response> responseList = fraudDetectionService.validateTransaction(analyzeRequest);
-
 
         BigDecimal expectedTransactionAmount = new BigDecimal("10000.00");
         String expectedMessage = "avergae spending is over limit";
@@ -257,7 +248,7 @@ public class FraudDetectionServiceTest {
     }
 
     @Test
-    public void zeroUsage_expect() throws IOException {
+    public void zeroUsage_expectApproved() throws IOException {
         AnalyzeRequest analyzeRequest = getJsonRequestTestData("src/test/resources/sample.json");
 
         BigDecimal transactionHardLimit = new BigDecimal("50000");
@@ -290,9 +281,7 @@ public class FraudDetectionServiceTest {
         when(decisionRuleConfigMock.getUsageHardLimit()).thenReturn(usageHardLimit);
         when(decisionRuleConfigMock.getUsageSoftLimit()).thenReturn(usageSoftLimit);
 
-
         List<Response> responseList = fraudDetectionService.validateTransaction(analyzeRequest);
-
 
         BigDecimal expectedTransactionAmount = new BigDecimal("10000.00");
         String expectedMessage = "transaction approved";

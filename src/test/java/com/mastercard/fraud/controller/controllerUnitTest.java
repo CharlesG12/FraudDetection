@@ -1,14 +1,14 @@
 package com.mastercard.fraud.controller;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mastercard.fraud.exception.CustomException;
+import com.mastercard.fraud.exception.CustomExceptionType;
 import com.mastercard.fraud.model.InputValidationResponse;
 import com.mastercard.fraud.model.Response;
 import com.mastercard.fraud.model.ResponseVO;
 import com.mastercard.fraud.model.transactionPost.AnalyzeRequest;
 import com.mastercard.fraud.service.FraudDetectionService;
-import com.mastercard.fraud.utils.AjaxResponse;
+import com.mastercard.fraud.exception.AjaxResponse;
 import com.mastercard.fraud.utils.TransactionMapper;
-import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -28,8 +28,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
 @Slf4j
@@ -41,30 +42,41 @@ public class controllerUnitTest {
     private TransactionAnalyzeController controller;
 
     @Mock
-    private FraudDetectionService fraudDetectionService;
+    private FraudDetectionService fraudDetectionServiceMock;
 
     @Mock
     private TransactionMapper mapperMock;
 
     @Test
     public void expectInvalidInput() throws IOException {
-        AnalyzeRequest analyzeRequest = getJsonRequestTestData("src/test/resources/sample.json");
+        AnalyzeRequest analyzeRequest = getJsonRequestTestData("src/test/resources/requestTestData/negativeTransaction.json");
 
-        InputValidationResponse inputValidationResponse = InputValidationResponse.builder().isValid(false).message("test failed").build();
 
-        when(fraudDetectionService.validateInput(any(AnalyzeRequest.class))).thenReturn(inputValidationResponse);
+        doThrow(new CustomException(CustomExceptionType.USER_INPUT_ERROR, "test")).when(fraudDetectionServiceMock)
+                .validateInput(any(AnalyzeRequest.class));
 
-        AjaxResponse ajaxResponse = controller.analyzeTransaction(analyzeRequest);
-        log.info(ajaxResponse.toString());
+        CustomException customException = assertThrows(CustomException.class,
+                () -> controller.analyzeTransaction(analyzeRequest));
 
-        Boolean expectedIsOk = true;
-        Integer expectedCode = 200;
-        String expectedMessage = "Invalid Input";
+//        assertEquals(false, ajaxResponse.isOk());
+//        assertEquals(400, ajaxResponse.getCode());
+        log.info(customException.toString());
+//        AjaxResponse ajaxResponse = controller.analyzeTransaction(analyzeRequest);
+//        assertEquals(false, ajaxResponse.isOk());
+//        assertEquals(400, ajaxResponse.getCode());
+//        assertEquals("test", ajaxResponse.getMessage().toString());
 
-        assertEquals(expectedIsOk, ajaxResponse.isOk());
-        assertEquals(expectedCode, ajaxResponse.getCode());
-        assertEquals(expectedMessage, ajaxResponse.getMessage());
-        log.info(ajaxResponse.getData().toString());
+//        log.info(ajaxResponse.toString());
+//        log.info(ajaxResponse.toString());
+//
+//        Boolean expectedIsOk = true;
+//        Integer expectedCode = 200;
+//        String expectedMessage = "Invalid Input";
+//
+//        assertEquals(expectedIsOk, ajaxResponse.isOk());
+//        assertEquals(expectedCode, ajaxResponse.getCode());
+//        assertEquals(expectedMessage, ajaxResponse.getMessage());
+//        log.info(ajaxResponse.getData().toString());
     }
 
     @Test
@@ -91,8 +103,8 @@ public class controllerUnitTest {
                 .build();
         expectResponseVOList.add(responseVO);
 
-        when(fraudDetectionService.validateInput(any(AnalyzeRequest.class))).thenReturn(inputValidationResponse);
-        when(fraudDetectionService.validateTransaction(any(AnalyzeRequest.class))).thenReturn(expectResponseList);
+//        when(fraudDetectionService.validateInput(any(AnalyzeRequest.class))).thenReturn(inputValidationResponse);
+        when(fraudDetectionServiceMock.validateTransaction(any(AnalyzeRequest.class))).thenReturn(expectResponseList);
         when(mapperMock.responseVO(Mockito.<Response>anyList())).thenReturn(expectResponseVOList);
 
         AjaxResponse ajaxResponse = controller.analyzeTransaction(analyzeRequest);
@@ -115,4 +127,21 @@ public class controllerUnitTest {
         return analyzeRequest;
     }
 
+
+    @Test
+    public void expectException() throws IOException {
+        AnalyzeRequest analyzeRequest = getJsonRequestTestData("src/test/resources/sample.json");
+//        AnalyzeRequest analyzeRequest = getJsonRequestTestData("src/test/resources/requestTestData/broken.json");
+
+
+        when(fraudDetectionServiceMock.validateTransaction(any(AnalyzeRequest.class))).thenThrow(new CustomException(
+                CustomExceptionType.SYSTEM_ERROR, "Test throw exception"
+        ));
+
+        CustomException customException = assertThrows(CustomException.class,
+                () -> controller.analyzeTransaction(analyzeRequest));
+
+        assertEquals(500, customException.getCode());
+        assertEquals("Test throw exception", customException.getMessage());
+    }
 }

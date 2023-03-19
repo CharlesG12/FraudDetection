@@ -15,8 +15,8 @@ then applies some business logic before returning a decision to approve or decli
     Test - unit test(integration test), coverage report, load-test.
     Service should be able to handle and respond to input errors.
     Service should log the following underlined transaction information for debugging
-    
-    Add a time limit for connect to external api.
+
+Add a time limit for connect to external api.
     
 ## Business Logic
     If the amount of a transaction is over $50,000.00 decline the transaction.
@@ -33,24 +33,23 @@ then applies some business logic before returning a decision to approve or decli
         4. Transaction Amount is under minimum:           Response with isValid : False,  Message with: Transaction amount is under min limit, Error Input
 
 ### External API connection
-    The system design includes calling an external API to retrieve data, and if the API fails to return data within a specified time limit, an exception will be thrown. 
-    If no data is returned, a "not found" error message will be returned to the requester. 
-    In the event of a server outage or other disruption of the external API, the system is designed to provide randomly generated data to ensure continued service availability. This feature is intended for development and testing purposes only.
+The system design includes calling an external API to retrieve data, and if the API fails to return data within a specified time limit, an exception will be thrown. 
+If no data is returned, a "not found" error message will be returned to the requester. 
+In the event of a server outage or other disruption of the external API, the system is designed to provide randomly generated data to ensure continued service availability. This feature is intended for development and testing purposes only.
 
 
 ### Obfuscate Card Number
-    The system achieves masking of credit card numbers by overriding the toString() function in the ResponseVO, Response, and CardNum model classes. The implementation masks the card number only if its length is over 13 digits. However, this approach may have the drawback of accidentally calling other functions that print out the card number, leading to unintended disclosure.
-
+The system achieves masking of credit card numbers by overriding the toString() function in the ResponseVO, Response, and CardNum model classes. The implementation masks the card number only if its length is over 13 digits. However, this approach may have the drawback of accidentally calling other functions that print out the card number, leading to unintended disclosure.
 An alternative approach to masking credit card numbers is to use a custom log mask pattern. This approach may impact system performance, and the rules for defining the masking pattern may be complex. Nevertheless, this approach offers the advantage of greater flexibility in masking patterns and can provide more robust protection of sensitive data.
 
 ### Unit Test
     coverage: 
         Class: 100%
         Method: 100%
-        Line: 95%
+        Line: 97%
 
-    The 5% untested line is from mapstruct auto generated lines.
-    Since it's a lot line about test if the input is null, so used null object to test against part of the mapstruct object.
+The 3% untested line is from mapstruct auto generated lines.
+Since it's a lot line about test if the input is null, so used null object to test against part of the mapstruct object.
 
 ### Load Test
     Used Jmeter for load test

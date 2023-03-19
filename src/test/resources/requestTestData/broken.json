@@ -9,15 +9,7 @@
       "title": "transaction",
       "type": "object",
       "required": [
-        "cardNum",
-        "amount"
-      ],
-      "properties": {
-        "cardNum": {
-          "title": "cardnum",
-          "type": "integer",
-          "minimum": 1000000000000000,
-          "maximum": 9999999999999999,
+
           "examples": [
             5026840000000001
           ],

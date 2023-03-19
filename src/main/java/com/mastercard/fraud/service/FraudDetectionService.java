@@ -1,5 +1,7 @@
 package com.mastercard.fraud.service;
 import com.mastercard.fraud.config.DecisionRuleConfig;
+import com.mastercard.fraud.exception.CustomException;
+import com.mastercard.fraud.exception.CustomExceptionType;
 import com.mastercard.fraud.model.*;
 import com.mastercard.fraud.model.externalApi.CardUsageWeekly;
 import com.mastercard.fraud.model.transactionPost.AnalyzeRequest;
@@ -25,41 +27,48 @@ public class FraudDetectionService {
     @Resource
     DecisionRuleConfig decisionRuleConfig;
 
-    public InputValidationResponse validateInput(AnalyzeRequest analyzeRequest) {
+    public void validateInput(AnalyzeRequest analyzeRequest) {
         TransactionList transactionList = mapper.transactionPOList(analyzeRequest);
 
         if(transactionList.getCardNum().size() != transactionList.getAmount().size()) {
-            return InputValidationResponse.builder().isValid(false).message("Input amount count does not match card number count").build();
+            throw new CustomException(CustomExceptionType.USER_INPUT_ERROR, "Input amount count does not match card number count");
+
+//            return InputValidationResponse.builder().isValid(false).message("Input amount count does not match card number count").build();
         }
 
         BigInteger maxCardNum = analyzeRequest.getPropertiesRoot().getTransaction().getPropertiesTransaction().getCardNum().getMaximum();
         BigInteger minCardNum = analyzeRequest.getPropertiesRoot().getTransaction().getPropertiesTransaction().getCardNum().getMinimum();
         BigDecimal minUsageAmount = analyzeRequest.getPropertiesRoot().getTransaction().getPropertiesTransaction().getAmount().getMinimum();
 
-        boolean isValid = true;
-        StringBuilder messageBuilder = new StringBuilder();
-        messageBuilder.append("");
+//        boolean isValid = true;
+//        StringBuilder messageBuilder = new StringBuilder();
+//        messageBuilder.append("");
 
         for( BigInteger cardNum : transactionList.getCardNum()) {
             if( cardNum.compareTo(maxCardNum) > 0) {
-                isValid = false;
-                messageBuilder.append( String.format("Card number is over Max limit, Error Input: %s", cardNum));
+//                isValid = false;
+//                messageBuilder.append( String.format("Card number is over Max limit, Error Input: %s", cardNum));
+                throw new CustomException(CustomExceptionType.USER_INPUT_ERROR, "card number is bigger than max card num");
             }
 
             if( cardNum.compareTo(minCardNum) < 0) {
-                isValid = false;
-                messageBuilder.append( String.format("Card number is under Min limit, Error Input: %s", cardNum));
+                throw new CustomException(CustomExceptionType.USER_INPUT_ERROR, "card number is smaller than min card num");
+
+//                isValid = false;
+//                messageBuilder.append( String.format("Card number is under Min limit, Error Input: %s", cardNum));
             }
         }
 
         for( BigDecimal amount : transactionList.getAmount()) {
             if( amount.compareTo(minUsageAmount) < 0) {
-                isValid = false;
-                messageBuilder.append( String.format("Transaction amount is under min limit, Error Input: %s", amount));
+                throw new CustomException(CustomExceptionType.USER_INPUT_ERROR, "transaction amount is smaller than the minimum requirement");
+//
+//                isValid = false;
+//                messageBuilder.append( String.format("Transaction amount is under min limit, Error Input: %s", amount));
             }
         }
 
-        return InputValidationResponse.builder().isValid(isValid).message(messageBuilder.toString()).build();
+//        return InputValidationResponse.builder().isValid(isValid).message(messageBuilder.toString()).build();
     }
 
     public List<Response> validateTransaction(AnalyzeRequest analyzeRequest) {
@@ -115,7 +124,7 @@ public class FraudDetectionService {
         return cardUsageWeekly.getTotalUsage() > decisionRuleConfig.getUsageHardLimit();
     }
 
-    private boolean isOverAvgLimit(BigDecimal amount, CardUsageWeekly cardUsageWeekly, DecisionRuleConfig decisionRuleConfig) throws ArithmeticException{
+    private boolean isOverAvgLimit(BigDecimal amount, CardUsageWeekly cardUsageWeekly, DecisionRuleConfig decisionRuleConfig){
         if (amount.compareTo(new BigDecimal("0.00")) == 0) {
             return false;
         }
@@ -124,10 +133,15 @@ public class FraudDetectionService {
             if(cardUsageWeekly.getTotalUsage() == 0 ) {
                 return false;
             }
-            BigDecimal avgSpend = amount.divide(BigDecimal.valueOf(cardUsageWeekly.getTotalUsage()), 3, RoundingMode.CEILING);
-            if( avgSpend.compareTo(decisionRuleConfig.getTransactionAvgLimit()) > 0 ) {
-                return true;
+            try {
+                BigDecimal avgSpend = amount.divide(BigDecimal.valueOf(cardUsageWeekly.getTotalUsage()), 3, RoundingMode.CEILING);
+                if( avgSpend.compareTo(decisionRuleConfig.getTransactionAvgLimit()) > 0 ) {
+                    return true;
+                }
+            } catch(ArithmeticException e) {
+                throw new CustomException(CustomExceptionType.SYSTEM_ERROR, "arithmetic error");
             }
+
         }
         return false;
     }

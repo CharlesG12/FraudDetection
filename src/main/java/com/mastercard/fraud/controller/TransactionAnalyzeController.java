@@ -1,11 +1,12 @@
 package com.mastercard.fraud.controller;
+import com.mastercard.fraud.exception.CustomException;
 import com.mastercard.fraud.model.InputValidationResponse;
 import com.mastercard.fraud.model.Response;
 import com.mastercard.fraud.model.ResponseDTO;
 import com.mastercard.fraud.model.ResponseVO;
 import com.mastercard.fraud.model.transactionPost.AnalyzeRequest;
 import com.mastercard.fraud.service.FraudDetectionService;
-import com.mastercard.fraud.utils.AjaxResponse;
+import com.mastercard.fraud.exception.AjaxResponse;
 import com.mastercard.fraud.utils.TransactionMapper;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
@@ -29,11 +30,7 @@ public class TransactionAnalyzeController {
     public AjaxResponse analyzeTransaction(@RequestBody AnalyzeRequest analyzeRequest) {
         log.info("analyze transaction post request:" + analyzeRequest);
 
-        InputValidationResponse inputValidationResponse = fraudDetectionService.validateInput(analyzeRequest);
-        if(!inputValidationResponse.isValid()) {
-            log.info(inputValidationResponse.getMessage());
-            return AjaxResponse.fail(inputValidationResponse);
-        }
+        fraudDetectionService.validateInput(analyzeRequest);
 
         List<Response> responseList = fraudDetectionService.validateTransaction(analyzeRequest);
         List<ResponseVO> responseVOList = mapper.responseVO(responseList);

@@ -1,6 +1,7 @@
 package com.mastercard.fraud.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mastercard.fraud.exception.CustomException;
 import com.mastercard.fraud.model.InputValidationResponse;
 import com.mastercard.fraud.model.Response;
 import com.mastercard.fraud.model.transactionPost.AnalyzeRequest;
@@ -18,6 +19,7 @@ import java.nio.file.Paths;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @Slf4j
 @SpringBootTest
@@ -28,28 +30,26 @@ public class FraudDetectionJsonFileTest {
     FraudDetectionService fraudDetectionService;
 
     @Test
-    void test() throws IOException {
+    void swaggerDefaultJson_expectApproved() throws IOException {
         AnalyzeRequest analyzeRequest = getJsonRequestTestData("src/test/resources/requestTestData/swaggerDefault.json");
-        InputValidationResponse inputValidationResponse = fraudDetectionService.validateInput(analyzeRequest);
-
-        assertEquals(true, inputValidationResponse.isValid());
-        assertEquals("", inputValidationResponse.getMessage());
-//        log.info(inputValidationResponse.toString());
-
         List<Response> responseList = fraudDetectionService.validateTransaction(analyzeRequest);
 
         assertEquals(1, responseList.size());
         assertEquals("0", responseList.get(0).getCardNumber().toString());
         assertEquals("0", responseList.get(0).getTransactionAmount().toString());
-        log.info(responseList.toString());
+        assertEquals(1, responseList.size());
+        assertEquals("transaction approved", responseList.get(0).getMessage().toString());
     }
 
     @Test
     void negativeAmount_expectFail() throws IOException {
         AnalyzeRequest analyzeRequest = getJsonRequestTestData("src/test/resources/requestTestData/negativeTransaction.json");
-        InputValidationResponse inputValidationResponse = fraudDetectionService.validateInput(analyzeRequest);
 
-        log.info(inputValidationResponse.toString());
+        CustomException customException = assertThrows(CustomException.class,
+                () -> fraudDetectionService.validateInput(analyzeRequest));
+
+        assertEquals("transaction amount is smaller than the minimum requirement", customException.getMessage());
+        assertEquals(400, customException.getCode());
     }
 
     public AnalyzeRequest getJsonRequestTestData(String path) throws IOException {
